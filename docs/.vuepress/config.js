@@ -5,7 +5,7 @@ module.exports = {
       md.use(require('markdown-it-tetris'));
     },
   },
-  base: '/VuePress/',
+  base: '/vue-note/',
   // Extra tags to inject into the page HTML <head>
   head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
   configureWebpack: {
@@ -26,7 +26,7 @@ module.exports = {
     // 導航欄配置
     nav: [
       // { text: '內部連結', link: '/algorithm/' }, // 內部鏈接 以docs為根目錄
-      { text: 'GitHub', link: 'https://github.com/linche0859/VuePress' }, // 外部鏈接
+      { text: 'GitHub', link: 'https://github.com/linche0859/vue-note' }, // 外部鏈接
     ],
     // 側邊欄配置
     sidebar: [
