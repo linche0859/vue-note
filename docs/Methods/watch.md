@@ -1,6 +1,6 @@
-# `$watch`
+# \$watch
 
-## 於生命週期 Hook 中
+## 生命週期的 Hook 中
 
 :::tip 優點
 
@@ -14,7 +14,7 @@ new Vue({
   el: '#app',
   data: {
     name: 'test',
-    age: 18
+    age: 18,
   },
   beforeCreate() {
     console.log('beforeCreate');
@@ -51,7 +51,7 @@ new Vue({
         before() {
           console.log(this);
           console.log('name watcher before');
-        }
+        },
       }
     );
     this.name = 'test2';
@@ -69,7 +69,7 @@ new Vue({
   beforeDestroy() {
     // 解除監看（ unwatch ）的方式，就是呼叫 $watch 所回傳的函式即可
     this.ageWatcher();
-  }
+  },
 });
 ```
 
