@@ -1,4 +1,4 @@
-# \$watch
+# `vm.$watch`
 
 ## 生命週期的 Hook 中
 

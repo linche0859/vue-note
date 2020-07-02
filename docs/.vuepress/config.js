@@ -35,19 +35,18 @@ module.exports = {
         children: ['/basic/instance'],
       },
       {
-        title: 'Methods',
-        children: ['/Methods/watch'],
+        title: '全局 API',
+        children: ['/api/filter'],
+      },
+      {
+        title: '實例方法',
+        children: ['/Methods/watch', '/Methods/option'],
       },
       {
         title: 'Component',
         // collapsable: false,
         path: '/Component/',
-        children: [
-          '/Component/props',
-          '/Component/is',
-          '/Component/option',
-          '/Component/global',
-        ],
+        children: ['/Component/props', '/Component/is', '/Component/global'],
       },
       {
         title: 'EventBus',

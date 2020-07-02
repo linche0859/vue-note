@@ -1,7 +1,8 @@
 # 網站目錄
 
 - [基礎入門](basic/instance.md)
-- [Methods](/Methods/watch.md)
+- [全局 API ](/api/filter.md)
+- [實例方法 ](/Methods/watch.md)
 - [Component](/Component/base.md)
 - [EventBus](/EventBus/README.md)
 - [Vue Router](/Router/README.md)

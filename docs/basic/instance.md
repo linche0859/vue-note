@@ -60,3 +60,7 @@ const vm = new Vue({
 這是由於以底線 `_` 或錢字號 `$` 作為開頭的屬性，可能會與 Vue.js 內建的屬性與 API 名稱產生衝突，所以應該盡量避免。
 
 :::
+
+## 參考
+
+[Vue.js 的核心: 實體](https://book.vue.tw/CH1/1-2.html)

@@ -1,4 +1,4 @@
-# `$options`
+# `vm.$options`
 
 ## Vue 真正的實體
 
@@ -9,7 +9,7 @@ export default {
   name: 'App',
   mounted() {
     console.log(Vue.options);
-  }
+  },
 };
 ```
 
@@ -19,7 +19,7 @@ export default {
 import Vue from 'vue'; // 這裡就是所謂的「那個」Vue
 
 export default {
-  name: 'App'
+  name: 'App',
 };
 ```
 
@@ -27,7 +27,7 @@ export default {
 
 ## 全域動態載入
 
-### `/extends/components`
+`/extends/components`
 
 ```js
 import HelloKitty from '@/components/HelloKitty.vue';
@@ -37,7 +37,7 @@ Vue.component('HelloKitty', HelloKitty);
 Vue.component('HelloWorld', HelloWorld);
 ```
 
-### `App.vue`
+`App.vue`
 
 透過 `:is` 的方法來做到元件替換
 
@@ -60,7 +60,7 @@ Vue.component('HelloWorld', HelloWorld);
         myComponent: 'HelloKitty',
         // 載入的component
         loadedComponent: null,
-        select: []
+        select: [],
       };
     },
     watch: {
@@ -70,8 +70,8 @@ Vue.component('HelloWorld', HelloWorld);
           if (this.$options.components[newVal]) {
             this.loadedComponent = this.$options.components[newVal];
           }
-        }
-      }
+        },
+      },
     },
     mounted() {
       this.getPrototype(this.$options.components);
@@ -82,18 +82,18 @@ Vue.component('HelloWorld', HelloWorld);
         // 找是否有自己的屬性
         if (Object.getOwnPropertyNames(obj).length === 0) return;
         // recursive approach
-        Object.getOwnPropertyNames(obj).forEach(name => {
+        Object.getOwnPropertyNames(obj).forEach((name) => {
           // this.$options.name為 App
           if (name !== this.$options.name) this.select.push(name);
         });
         this.getPrototype(Object.getPrototypeOf(obj));
-      }
-    }
+      },
+    },
   };
 </script>
 ```
 
-### `main.js`
+`main.js`
 
 ```js
 import Vue from 'vue';
@@ -102,7 +102,7 @@ import App from './App.vue';
 require('./extends/myComponent.js');
 
 new Vue({
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount('#app');
 ```
 
