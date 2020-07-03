@@ -32,7 +32,7 @@ module.exports = {
     sidebar: [
       {
         title: '基礎入門',
-        children: ['/basic/instance'],
+        children: ['/basic/instance', '/basic/event'],
       },
       {
         title: '全局 API',
