@@ -2,9 +2,7 @@
   <div class="self">
     <div class="modal-mask" v-show="show">
       <div class="modal-container h-100" @click.self="show = false">
-        <div class="modal-body">
-          Hello
-        </div>
+        <div class="modal-body">Hello</div>
       </div>
     </div>
     <base-button @click.native="show = true"></base-button>
@@ -12,24 +10,25 @@
 </template>
 
 <script>
-import BaseButton from '../../BaseButton';
+import BaseButton from "../../BaseButton";
 
 export default {
-  name: 'Self',
+  // 事件修飾子 self 的範例
+  name: "Self",
   components: {
-    BaseButton,
+    BaseButton
   },
   props: {},
   data() {
     return {
-      show: false,
+      show: false
     };
   },
   computed: {},
   watch: {},
   created() {},
   mounted() {},
-  methods: {},
+  methods: {}
 };
 </script>
 

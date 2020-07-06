@@ -41,7 +41,7 @@
 `.passive` 等同於 `addEventListener` 的 `passive` 屬性，
 用途是告訴瀏覽器這個事件處理器會不會呼叫 `event.preventDefault` 來停止瀏覽器的原生行為。
 
-```js
+```html
 <div @scroll.passive="onScroll">...</div>
 ```
 

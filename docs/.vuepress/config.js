@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   title: 'Vue 筆記',
   markdown: {
@@ -8,10 +10,35 @@ module.exports = {
   base: '/vue-note/',
   // Extra tags to inject into the page HTML <head>
   head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
+  module: {
+    rules: [
+      // 參考 sass-loader 文件
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+          'postcss-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
+      },
+    ],
+  },
   configureWebpack: {
     resolve: {
       alias: {
         '@image': '/images',
+        '@styles': path.resolve(__dirname, './styles'),
       },
     },
   },
@@ -32,7 +59,7 @@ module.exports = {
     sidebar: [
       {
         title: '基礎入門',
-        children: ['/basic/instance', '/basic/event'],
+        children: ['/basic/instance', '/basic/event', '/basic/condition'],
       },
       {
         title: '全局 API',
