@@ -2,6 +2,15 @@
 
 ![response concept](./response.jpg)
 
+這個 Render Function 會在記憶體生成 Virtual DOM 來模擬網頁上實際的 DOM 節點，
+然後透過 `patch` 來比對 Virtual DOM 前後的差異，最後才將更新後的節點重新渲染至畫面上。
+
+要注意的是，DOM 的更新動作在 Vue.js 裡是 **非同步** 執行的，當 `setter` 偵測到狀態被更新時，
+就會啟動一個排隊的隊伍 (Queue)，並且對同一個事件循環 (Event Loop) 內發生的所有變更進行緩衝，
+
+這樣做的好處，是若同一個 `watch` 在短時間內被多次觸發，它只會被送進等待隊伍一次，可以省去多餘重複的計算次數，
+直到下一個事件循環 (Vue 官方稱 `tick`) 才會刷新重整在等待隊伍內的任務，更新並且同步 Vue 實體內的 DOM。
+
 ## 資料驅動
 
 ```js
@@ -37,7 +46,8 @@ Dependency.prototype.add = function() {
 Dependency.prototype.notify = function() {
   console.log('notify');
   console.log(this.renders);
-  this.renders.forEach(render => {
+  this.renders.forEach((render) => {
+    // 執行 Render 的 prototype function：call
     // 特意使用 call 作為函式名，讓 Render 和 Watcher 原型都能統一呼叫
     render.call();
   });
@@ -97,7 +107,7 @@ const setDefinedProperty = function(key, target) {
  */
 const observe = function(target) {
   if (isObject(target)) {
-    Object.keys(target).forEach(key => {
+    Object.keys(target).forEach((key) => {
       setDefinedProperty(key, target);
     });
   }
@@ -108,7 +118,6 @@ const person = {
   first: 'John',
   last: 'Doe',
   age: 18,
-  : 0,
 };
 const renderPersonData = observe(person);
 
@@ -152,7 +161,7 @@ const isFunction = function(target) {
  */
 const computed = function(target) {
   if (isObject(target)) {
-    Object.keys(target).forEach(key => {
+    Object.keys(target).forEach((key) => {
       const value = target[key];
       if (isFunction(value)) {
         Object.defineProperty(target, key, {
@@ -261,7 +270,7 @@ Watcher.prototype.call = function() {
  */
 const watch = function(target, data) {
   if (isObject(target)) {
-    Object.keys(target).forEach(key => {
+    Object.keys(target).forEach((key) => {
       if (data.hasOwnProperty(key)) {
         let handler = function() {};
         let immediate = false;
