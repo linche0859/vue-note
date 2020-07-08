@@ -1,4 +1,4 @@
-# `props`
+# `vm.$props`
 
 ## 不是 `Props` 的 DOM 屬性
 
@@ -84,10 +84,10 @@ Vue.component('base-checkbox', {
   inheritAttrs: false,
   model: {
     prop: 'checked',
-    event: 'change'
+    event: 'change',
   },
   props: {
-    checked: Boolean
+    checked: Boolean,
   },
   template: `
           <div>
@@ -98,7 +98,7 @@ Vue.component('base-checkbox', {
               v-on:change="$emit('change', $event.target.checked)"
             >
           </div>
-        `
+        `,
 });
 ```
 
@@ -135,7 +135,7 @@ Vue.component('base-checkbox', {
     // 預設為 value
     prop: 'checked',
     // 預設為 input
-    event: 'change'
+    event: 'change',
   },
   // 跟 value 一樣， v-model 的 prop : checked 要設定在 props 中
   props: ['checked', 'label'],
@@ -148,7 +148,7 @@ Vue.component('base-checkbox', {
       >
       {{label}}
     </label>
-  `
+  `,
 });
 ```
 
@@ -216,7 +216,7 @@ Vue.component('base-input-with-label', {
           input(event) {
             // 這時候的 this 為原生 window 原生事件
             vm.$emit('input', event.target.value);
-          }
+          },
         }
       );
     },
@@ -226,9 +226,9 @@ Vue.component('base-input-with-label', {
         // 覆蓋 $listeners 中的 focus 事件
         focus(event) {
           console.log('this is from child focus event');
-        }
+        },
       });
-    }
+    },
   },
   template: `
           <label>
@@ -236,7 +236,7 @@ Vue.component('base-input-with-label', {
             <!--只會觸發 focus 事件-->
             <input v-on="focusListeners">
           </label>
-        `
+        `,
 });
 ```
 

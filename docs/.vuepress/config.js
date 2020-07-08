@@ -70,10 +70,14 @@ module.exports = {
         children: ['/Methods/watch', '/Methods/option'],
       },
       {
-        title: 'Component',
+        title: '組件系統',
         // collapsable: false,
-        path: '/Component/',
-        children: ['/Component/props', '/Component/is', '/Component/global'],
+        children: [
+          'Component/feature',
+          '/Component/props',
+          '/Component/is',
+          '/Component/global',
+        ],
       },
       {
         title: 'EventBus',
