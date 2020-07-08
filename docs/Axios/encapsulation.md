@@ -1,6 +1,6 @@
 # 封裝
 
-## 安裝
+## 安裝和準備
 
 ```bash
 npm i axios
@@ -8,7 +8,7 @@ npm i axios
 npm i vant
 ```
 
-## 準備
+### 靜態資料
 
 `public` 資料夾下新增 `data.json`
 
@@ -32,18 +32,35 @@ npm i vant
 }
 ```
 
-`src` 下新增 `api` 資料夾和 `index.js` 和 `base.js`
+## 新增檔案說明
 
-| 檔案  | 功能                                                  |
-| ----- | ----------------------------------------------------- |
-| index | 1.封裝 axios <br> 2.斷網情況處理<br> 3.請求和響應攔截 |
-| base  | 接口域名有多個情況                                    |
+`src` 下新增 `api` 資料夾和 `index.js`、`base.js`和 `login-api.js`。
 
----
+| 檔案         | 功能                                                  |
+| ------------ | ----------------------------------------------------- |
+| index.js     | 1.封裝 axios <br> 2.斷網情況處理<br> 3.請求和響應攔截 |
+| base.js      | 接口域名有多個情況                                    |
+| login-api.js | 處理與後端介接的登入請求                              |
+
+**Base.js**
+
+```js
+/**
+ * 接口域名的管理
+ */
+const base = {
+  dev: 'data.json',
+  prod: 'data1.json',
+};
+
+export default base;
+```
+
+## 建立實體
 
 **index.js**
 
-```javascript
+```js
 import axios from 'axios';
 import store from '@/store';
 import router from '@/router';
@@ -53,11 +70,11 @@ import { Toast } from 'vant';
  * 提示函数
  * 禁止點擊蒙層、顯示一秒後關閉
  */
-const tip = msg => {
+const tip = (msg) => {
   Toast({
     message: msg,
     duration: 1000,
-    forbidClick: true
+    forbidClick: true,
   });
 };
 
@@ -69,8 +86,8 @@ const toLogin = () => {
   router.replace({
     path: '/login',
     query: {
-      redirect: router.currentRoute.fullPath
-    }
+      redirect: router.currentRoute.fullPath,
+    },
   });
 };
 
@@ -105,18 +122,26 @@ const errorHandle = (status, other) => {
 };
 
 // 創建 axios 實例
-var instance = axios.create({ timeout: 1000 * 12 });
+// 可以參考官網的屬性設定：https://github.com/axios/axios#request-config
+var instance = axios.create({
+  baseURL: 'https://your.api.domain.tw/',
+  headers: {'Content-Type': 'application/json'}
+  timeout: 1000 * 12
+});
 // 設置 post 請求頭
 instance.defaults.headers.post['Content-Type'] =
   'application/x-www-form-urlencoded';
 
 /**
  * 請求攔截器
- * 每次請求前，如果存在token則在請求頭中攜帶token
+ * 會放入兩個函式作為參數
+ * Fulfilled Function：第一個函式會在 request 送出前攔截到此次的 config，讓你可以做一些前置處理
+ * Rejected Function：第二個函式可以讓你在 request 發生錯誤時做一些額外的處理
+ * 每次請求前，如果存在 token 則在請求頭中攜帶 token
  * 透過瀏覽器的 Network中，在 Request Headers可觀察 Authorization
  */
 instance.interceptors.request.use(
-  config => {
+  (config) => {
     // 登錄流程控制中，根據本地是否存在 token 判斷用戶的登錄情況
     // 但是即使 token 存在，也有可能 token 是過期的，所以在每次的請求頭中攜帶 token
     // 後台根據攜帶的 token 判斷用戶的登錄情況，並返回給我們對應的狀態碼
@@ -126,15 +151,15 @@ instance.interceptors.request.use(
     token && (config.headers.Authorization = token);
     return config;
   },
-  error => Promise.error(error)
+  (error) => Promise.error(error)
 );
 
 // 響應攔截器
 instance.interceptors.response.use(
   // 請求成功
-  res => (res.status === 200 ? Promise.resolve(res) : Promise.reject(res)),
+  res => res.status === 200 ? Promise.resolve(res) : Promise.reject(res),
   // 請求失敗
-  error => {
+  (error) => {
     const { response } = error;
     if (response) {
       // 請求已發出，但是不在2xx的範圍
@@ -154,30 +179,69 @@ instance.interceptors.response.use(
   }
 );
 
-export default instance;
 ```
 
-**Base.js**
+## 封裝請求
 
-```javascript
-/**
- * 接口域名的管理
- */
-const base = {
-  dev: 'data.json',
-  prod: 'data1.json'
+透過判斷參數來回傳相對應的 `method`：
+
+**index.js**
+
+```js
+export default function (method, url, data = null, config) {
+  method = method.toLowerCase();
+  switch (method) {
+    case 'post':
+      return instance.post(url, data, config);
+    case 'get':
+      return instance.get(url, { params: data });
+    case 'delete':
+      return instance.delete(url, { params: data });
+    case 'put':
+      return instance.put(url, data);
+    case 'patch':
+      return instance.patch(url, data);
+    default:
+      console.log(`未知的 method: ${method}`);
+      return false;
+  }
+}
+```
+
+**login-api.js**
+
+```js
+import axios from './index';
+
+export const userSignUp = (signUpData) => {
+  return axios('post', '/user/sign-in', signUpData);
 };
 
-export default base;
+export const userLogIn = (logInData) => {
+  return axios('post', '/user/log-in', logInData);
+};
+
+export const userLogOut = () => {
+  return axios('get', '/user/log-out');
+};
+
+export const userDelete = (userNo) => {
+  return axios('delete', '/user/delete', userNo);
+};
+
+export const getToken = () => {
+  return axios('get', '/user/token');
+};
 ```
+
+## 請求應用
 
 **store.js**
 
 ```javascript
 import Vue from 'vue';
 import Vuex from 'vuex';
-import axios from '@/api'; // 導入 http 中創建的 axios 實例
-import base from '@/api/base'; // 導入接口域名列表
+import { getToken } from '@/api/login-api';
 import todolist from '@/store/module/todolist';
 
 Vue.use(Vuex);
@@ -186,10 +250,10 @@ export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
     token: null,
-    network: true
+    network: true,
   },
   modules: {
-    todolist
+    todolist,
   },
   mutations: {
     GET_TOKEN(state, data) {
@@ -197,76 +261,49 @@ export default new Vuex.Store({
     },
     CHANGE_NETWORK(state, val) {
       state.network = val;
-    }
+    },
   },
   actions: {
     // 取得 token
-    getToken({ commit }) {
-      axios.get(`${base.dev}`).then(res => {
-        commit('GET_TOKEN', res.data.token);
-      });
-    }
-  }
+    async getToken({ commit }) {
+      try {
+        const {
+          data: { token },
+        } = await getToken();
+        commit('GET_TOKEN', token);
+      } catch (e) {
+        // ...
+      }
+    },
+  },
 });
 ```
+
+## 全域掛載
 
 **main.js**
 
 ```javascript
 import api from '@/api';
-// 將 api 掛載到 vue 的原型上
+// 將 axios 掛載到 vue 的原型上
 // 目的讓各 component 也能直接使用
 Vue.prototype.$api = api;
 ```
 
-**store/module/todolist.js**
-
-```javascript
-import axios from '@/api'; // 導入 http 中創建的 axios 實例
-import base from '@/api/base'; // 導入接口域名列表
-
-const state = {
-  list: []
-};
-
-const mutations = {
-  GET_TOLIST(state, data) {
-    state.list = data;
-  }
-};
-
-const actions = {
-  getTodoList({ commit }) {
-    axios.get(`${base.dev}`).then(res => {
-      commit('GET_TOLIST', res.data.todolist);
-    });
-  }
-};
-
-export default {
-  namespaced: true,
-  state,
-  mutations,
-  actions
-};
-```
-
 **about.vue**
 
-可以使用 `$api` 讀取資料，如
+使用 `$api` 讀取資料，如；
 
-```javascript
-this.$api.get(`${base.prod}`).then(res => {
+```js
+this.$api('get', `${base.prod}`).then((res) => {
   console.log(res.data.todolist);
 });
-```
-
-因為使用 `vuex` 模組化，使用注意為
-
-```javascript
-this.$store.dispatch('todolist/getTodoList');
 ```
 
 ## 參考
 
 [使用 Axios 你的 API 都怎麼管理](https://medium.com/i-am-mike/%E4%BD%BF%E7%94%A8axios%E6%99%82%E4%BD%A0%E7%9A%84api%E9%83%BD%E6%80%8E%E9%BA%BC%E7%AE%A1%E7%90%86-557d88365619)
+
+[用 Axios Instance 管理 API](https://f820602h.github.io/Max-Blog/2020/05/27/axios-instance/)
+
+[透過 CancelToken 解析 Axios 原始碼](https://f820602h.github.io/Max-Blog/2020/07/07/axios-cancelToken/?fbclid=IwAR2oD_AXeC4S9dwXHTrZZ63acXygbBiFxAmWH9zqlrXjmAs7r_HsC9da3QI)
