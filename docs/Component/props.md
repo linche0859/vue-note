@@ -1,16 +1,92 @@
-# `vm.$props`
+# 組件之間的溝通傳遞
+
+:::tip 提醒
+
+注意 `prop` 在初始化時的順序會優於 `data` 、 `computed` 等屬性，所以像 `props` 中的 `default` 、 `validator` 是無法取得實體內的這些狀態。
+
+:::
+
+## 傳入 props 時沒有加上 v-bind
+
+一律以「純文字」的形式在子組件被接收，而不是外層組件的狀態。
+
+實務上，除了忘記加上 `v-bind` 指令的情況外，通常會使用在希望後端直接輸出網頁內容時，
+預先將傳入子組件的內容印在 HTML 的標籤上，這樣可以節省掉一次 request。
+
+## 以物件作為 props 傳遞
+
+由於 JavaScript 的物件是以「**參考**」的方式來傳遞的 (pass by reference) ，所以若是要由外層組件傳遞物件至內層子組件時，則需要特別小心。
+
+```html
+<edit-component
+  v-for="comic in comics"
+  :key="comic.id"
+  :comic="comic"
+></edit-component>
+```
+
+<TryBox>
+  <component-props-PropsObject />
+</TryBox>
+
+乍看之下感覺沒什麼問題，但是此時若我們嘗試在子組件對 `input` 進行修改，
+就會發現外層的資料也被變動了！
+
+這時就可能由於某個子組件的修改，卻造成另一個子組件的 `props` 狀態污染，產生難以追蹤且不可預期的錯誤了。
+
+所以，想要傳遞物件類型的 `props` 屬性時，先將物件屬性解構後再傳遞出去：
+
+```html {4,5,6}
+<edit-component
+  v-for="comic in comics"
+  :key="comic.id"
+  :id="comic.id"
+  :name="comic.name"
+  :time="comic.time"
+></edit-component>
+```
+
+如果覺得把所有的屬性打散，可以透過 `v-bind` 指令，達到自動將物件解構效果：
+
+```html {4}
+<edit-component
+  v-for="comic in comics"
+  :key="comic.id"
+  v-bind="comic"
+></edit-component>
+```
+
+<TryBox>
+  <component-props-PropsDestruct />
+</TryBox>
+
+## 父組件存取子組件的 DOM 元素
+
+如需要在子組件取得父層組件的內容，可以透過 `this.$parent` 來存取他的父層組件，反過來則是可以在外層透過 `this.$children` 來取得子組件的內容。
+
+另外，由於 `this.$children` 是以「陣列」的形式產生，
+而這個陣列有可能因為 `v-if` 或其他操作造成 `this.$children` 索引值的更動，
+此時我們可以在子組件上加上 `ref` 屬性作為別名：
+
+```html
+<div class="parent">
+  <child-component ref="child"></child-component>
+</div>
+```
+
+這樣就可以在父層透過 `this.$refs.child` 就可以來存取指定的子組件了。
 
 ## 不是 `Props` 的 DOM 屬性
 
-如果在元件上設定屬性並沒有在元件中的 `props` 被定義，這個屬性會直接套用在元件的 **根元素** 上
+如果在組件上設定屬性並沒有在組件中的 `props` 被定義，這個屬性會直接套用在組件的 **根元素** 上
 
 範例如下方
 
-## 合併父元件及子元件屬性
+## 合併父組件及子組件屬性
 
-`class` 及 `style` 在合併父元件及子元件時會將父子元件所有的屬性合併
+`class` 及 `style` 在合併父組件及子組件時會將父子組件所有的屬性合併
 
-**子元件**
+**子組件**
 
 加上 `class="thick"`：
 
@@ -21,7 +97,7 @@ Vue.component('kebab-case-converter', {
 })
 ```
 
-**父元件**
+**父組件**
 
 加上 `class="italic"`：
 
@@ -35,23 +111,23 @@ Vue.component('kebab-case-converter', {
 
 **結果**
 
-父元件的 `class` 屬性會跟子元件的 `class` 做合併
+父組件的 `class` 屬性會跟子組件的 `class` 做合併
 
 ```html
 <div class="thick italic" data-test="test data">kabeb-case : hello</div>
 ```
 
-## 由父元件替代子元件的屬性
+## 由父組件替代子組件的屬性
 
-除了 `class` 及 `style` 之外的其他屬性都會是由父元件蓋掉子元件屬性值
+除了 `class` 及 `style` 之外的其他屬性都會是由父組件蓋掉子組件屬性值
 
-**子元件 template**
+**子組件 template**
 
 ```html
 <div class="thick" data-test="child">kabeb-case : {{kababCase}}</div>
 ```
 
-**父元件**
+**父組件**
 
 ```html
 <kebab-case-converter
@@ -69,15 +145,15 @@ Vue.component('kebab-case-converter', {
 
 ## 避免替代屬性
 
-父元件的屬性蓋掉子元件的值有時會產生非預期的結果，為了避免這樣的問題， Vue 提供了 `inheritAttrs` 這個參數，它可以將元件設為不要帶入父元件的屬性值(只有那些沒有設定於子元件 `porps` 中的屬性值不會被帶入)。
+父組件的屬性蓋掉子組件的值有時會產生非預期的結果，為了避免這樣的問題， Vue 提供了 `inheritAttrs` 這個參數，它可以將組件設為不要帶入父組件的屬性值(只有那些沒有設定於子組件 `porps` 中的屬性值不會被帶入)。
 
-`inheritAttrs` 常常搭配 `$attrs` 這個物件設定， `$attrs` 是 _父元件_ 的屬性集合(沒有包含 `props` 中的屬性值)，有時我們不想將屬性值設於根元素中，可以使用 `inheritAttrs` 取消綁定屬性到根元素的行為，並且使用 `$attrs` 將屬性值綁定要我們期望的元素上。
+`inheritAttrs` 常常搭配 `$attrs` 這個物件設定， `$attrs` 是 _父組件_ 的屬性集合(沒有包含 `props` 中的屬性值)，有時我們不想將屬性值設於根元素中，可以使用 `inheritAttrs` 取消綁定屬性到根元素的行為，並且使用 `$attrs` 將屬性值綁定要我們期望的元素上。
 
 :::warning 注意
 `class` 跟 `style` 不會受 `inheritAttrs` 效果影響，也不會包在 `$attrs` 物件上。
 :::
 
-**子元件**
+**子組件**
 
 ```js
 Vue.component('base-checkbox', {
@@ -102,7 +178,7 @@ Vue.component('base-checkbox', {
 });
 ```
 
-**父元件**
+**父組件**
 
 ```html
 <base-checkbox
@@ -123,7 +199,7 @@ Vue.component('base-checkbox', {
 - `class` 因 `inheritAttrs` 及 `$attrs` 對 `class` 無效，所以還是在 **根元素** 上。
 - `data-test` 因 `inheritAttrs` 的影響，所以 _不會_ 出現在根元素上，但因 `$attrs` 綁定，所以會在 `input` 上。
 
-## 客製元件的 `v-model`
+## 客製組件的 `v-model`
 
 `v-model` 是 `v-bind:value` 及 `v-on:input` 的語法糖，它的作用是做 **雙向綁定**，但有些像是 `radio` 及 `checkbox` 需要 `value` 去綁定各別選項的值，而真正勾選的值是由像是 `checked` 之類的屬性綁定，為了避免 `v-model` 產生衝突，可以將 `model` 改為 `v-bind:checked` 及 `v-on:change` 來讓 `v-model` 運作正常。
 
@@ -178,9 +254,9 @@ Vue.component('base-checkbox', {
 </label>
 ```
 
-因為根元素是 `<label>` 而非 `<input>` ，所以 `@focus.native` 會綁定到 `<label>` 導致 `focus` 事件不會被觸發，為了解決這個問題， Vue 提供了 `$listeners` ，這個物件包含 **所有** 的父元件事件(排除有 `native` 修飾符的事件)，如此一來我們就可以使用 `$listeners` 綁定想要的元素。
+因為根元素是 `<label>` 而非 `<input>` ，所以 `@focus.native` 會綁定到 `<label>` 導致 `focus` 事件不會被觸發，為了解決這個問題， Vue 提供了 `$listeners` ，這個物件包含 **所有** 的父組件事件(排除有 `native` 修飾符的事件)，如此一來我們就可以使用 `$listeners` 綁定想要的元素。
 
-**修改子元件**
+**修改子組件**
 
 ```html
 <label>
@@ -189,7 +265,7 @@ Vue.component('base-checkbox', {
 </label>
 ```
 
-將父元件中的 `focus` 事件 **拿掉** `native` 修飾符
+將父組件中的 `focus` 事件 **拿掉** `native` 修飾符
 
 ```html
 <base-input-with-label @focus="onFocus"></base-input-with-label>
@@ -197,7 +273,7 @@ Vue.component('base-checkbox', {
 
 ## 切分 `$listeners` 的多個事件
 
-**子元件**
+**子組件**
 
 ```js
 Vue.component('base-input-with-label', {
@@ -240,7 +316,7 @@ Vue.component('base-input-with-label', {
 });
 ```
 
-**父元件**
+**父組件**
 
 ```html
 <base-input-with-label @focus="onFocus" v-model="label"></base-input-with-label>
@@ -251,3 +327,5 @@ Vue.component('base-input-with-label', {
 [屬性注意事項](https://ithelp.ithome.com.tw/articles/10208723?sc=rss.iron)
 
 [客製事件](https://ithelp.ithome.com.tw/articles/10209183)
+
+[組件之間的溝通傳遞](https://book.vue.tw/CH2/2-2.html)

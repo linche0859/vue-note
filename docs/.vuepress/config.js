@@ -42,6 +42,9 @@ module.exports = {
       },
     },
   },
+  chainWebpack(config) {
+    config.resolve.alias.set('vue', 'vue/dist/vue.common.js');
+  },
   markdown: {
     lineNumbers: true, // 代碼塊顯示行號
   },
