@@ -71,7 +71,7 @@ export default {
 <style lang="scss" scope>
 .propsDestruct {
   .card {
-    background-color: #ddd;
+    background-color: #eee;
     &:not(:last-child) {
       margin-bottom: 1rem;
     }
