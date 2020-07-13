@@ -79,6 +79,7 @@ module.exports = {
           'Component/feature',
           '/Component/props',
           '/Component/is',
+          '/Component/slot',
           '/Component/global',
         ],
       },

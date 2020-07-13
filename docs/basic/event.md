@@ -9,8 +9,8 @@
 以 modal 為範例：
 
 ```html {2}
-<div class="modal-mask" v-show="show">
-  <div class="modal-container h-100" @click.self="show = false">
+<div class="modal-mask">
+  <div class="modal-container" @click.self="show = false">
     <div class="modal-body">
       Hello
     </div>
