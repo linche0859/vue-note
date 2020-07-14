@@ -80,6 +80,7 @@ module.exports = {
           '/Component/props',
           '/Component/is',
           '/Component/slot',
+          '/Component/transition',
           '/Component/global',
         ],
       },
