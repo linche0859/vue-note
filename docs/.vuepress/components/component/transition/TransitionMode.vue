@@ -17,7 +17,7 @@
       </div>
       <div class="form-check">
         <input class="form-check-input" type="radio" id="radioOutIn" value="out-in" v-model="mode" />
-        <label class="form-check-label" for="radioInOut">out-in</label>
+        <label class="form-check-label" for="radioOutIn">out-in</label>
       </div>
     </div>
     <button class="btn btn-success" @click="show = !show">Click</button>

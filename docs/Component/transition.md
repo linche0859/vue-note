@@ -90,7 +90,7 @@ Vue 將過場漸變的效果包裝成一個獨立的 `<transition>` 組件，
 
 ## 條件與動態切換
 
-如果是使用 **同一元素**，並搭配 `v-if` 和 `<transition>` 渲染上會失效：
+如果是使用 **同一元素**，並搭配 `v-if` 和 `<transition>` 渲染上會無效果：
 
 ```html{2,5}
 <transition name="fade">
@@ -180,8 +180,16 @@ Vue 針對漸變效果的切換，除了預設的新元素進場的動畫先執�
 </transition-group>
 ```
 
-<p>除了 <code>v-show</code> 之外， <code>&lt;transition-group&gt;</code> 最常被拿來與 <code>v-for</code> 來做搭配，尤其是列表的顯示：</p>
+除了 `v-show` 之外， `<transition-group>` 最常被拿來與 `v-for` 來做搭配，尤其是列表的顯示：
+
+```html
+<transition-group class="row" name="slide" tag="ul">
+  <li class="col-2" v-for="(item,index) in list" :key="index + '_' + item">
+    <div class="card">{{ item }}</div>
+  </li>
+</transition-group>
+```
 
 <TryBox>
-  <component-transition-TransitionGroup />
+  <component-transition-TransitionGroupWithFor />
 </TryBox>
