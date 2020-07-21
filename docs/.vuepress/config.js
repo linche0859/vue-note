@@ -62,6 +62,7 @@ module.exports = {
     sidebar: [
       {
         title: '基礎入門',
+        // collapsable: false,
         children: ['/basic/instance', '/basic/event', '/basic/condition'],
       },
       {
@@ -74,7 +75,6 @@ module.exports = {
       },
       {
         title: '組件系統',
-        // collapsable: false,
         children: [
           'Component/feature',
           '/Component/props',
@@ -110,8 +110,7 @@ module.exports = {
       },
       {
         title: 'Axios',
-        path: '/Axios/',
-        children: ['/Axios/encapsulation'],
+        children: ['/Axios/basic', '/Axios/encapsulation'],
       },
       {
         title: '範例應用',
