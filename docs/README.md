@@ -24,6 +24,7 @@
 - [Slot 插槽](/Component/slot.md)
 - [漸變與動畫](/Component/transition.md)
 - [全域封裝](/Component/global.md)
+- [import 和 require 的運用](/Component/import-require.md)
 
 ## Vue Router
 

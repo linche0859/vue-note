@@ -83,6 +83,7 @@ module.exports = {
           '/Component/slot',
           '/Component/transition',
           '/Component/global',
+          '/Component/import-require',
         ],
       },
       {

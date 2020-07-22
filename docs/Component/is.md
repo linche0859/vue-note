@@ -2,17 +2,48 @@
 
 ## is
 
-- `:is` 後面接受一個 **Vue 元件實體**，或者是一個非同步傳輸的 Vue 元件實體，也可以為 **字串**
+這個修飾子相當特別，他的目的是，將使用這個屬性的組件替換掉，替換成指定的 Vue 組件。換句話說，只要把 Vue 組件引入後，甚至可以不需要在父層組件設定 `components`，就可以使用。
+
+```html{3}
+<template>
+  <section>
+    <div :is="myComponent" />
+  </section>
+</template>
+
+<script>
+  import HelloWorld from '@/components/HelloWorld.vue';
+
+  export default {
+    name: 'App',
+    data() {
+      return {
+        myComponent: HelloWorld,
+      };
+    },
+  };
+</script>
+```
+
+- `:is` 後面接受一個 **Vue 組件實體**，或者是一個非同步傳輸的 Vue 組件實體，也可以為 **字串**
 - `$refs` 如果使用 `:is` 的時候，對於 `mounted` 有些為差異：
 
-  - 如果是先 `import` 再指定，在 `mounted` 可以馬上取得該元件。
-  - 如果是使用**非同步載入**，在 `mounted` 必須等待 `200ms` 之後才能拿到。
+  - 如果是先 `import` 再指定，在 `mounted` 可以馬上取得該組件。
+  - 如果是使用 **非同步載入**，在 `mounted` 必須等待 `200ms` 之後才能拿到。
 
-- 使用 `:is` 的元件，整個元件會被銷毀再重建。
-- 父元件 `不保證` 其使用 `:is` 的子元件是不是一定會在 DOM 結構樹當中。
+- 使用 `:is` 的組件，整個組件會被銷毀再重建。
+- 父組件 `不保證` 其使用 `:is` 的子組件是不是一定會在 DOM 結構樹當中。
 
 ::: danger 注意
-當使用 `:is` 來操作元件時，無論是否用了非同步載入，請務必確認綁定的動作 (如：偵聽事件) 有確實被移除。
+
+每次被 `:is` 載入的組件，都是被消滅然後重新建立。所以，不管呼叫幾次組件，他的 `created` 都會被呼叫出來。也就是說，每次的生命週期都回重新走過一遍。
+
+所以，當在這些生命週期，甚至是組件當中，有將任何動作 **綁定** 到全域變數上面的，請記得把他取消，例如：
+
+```js
+window.addEventListener('click', function () { ... }, false)
+```
+
 :::
 
 ### 分頁標籤範例
@@ -67,7 +98,7 @@ export default {
 
 ## 非同步載入的 200ms
 
-```html
+```html{18,19,20,21,22,23}
 <script>
   const HelloWorld = () => ({
     component: import('@/components/HelloWorld.vue'),
@@ -96,15 +127,35 @@ export default {
 </script>
 ```
 
-結果
-
 ![async load](./async.png)
 
-## 非同步載入
+為何是 `200ms` 呢？
 
-利用 `computed` 和 `Promise`
+可以參考官網的 [動態載入](https://cn.vuejs.org/v2/guide/components-dynamic-async.html#%E5%A4%84%E7%90%86%E5%8A%A0%E8%BD%BD%E7%8A%B6%E6%80%81)。
 
-```html
+```js
+const HelloWorld = () => ({
+  // 你需要一個返回 Promise 的 Vue 組件實體
+  component: import('@/components/HelloWorld.vue'),
+  // 這裡可以指定在讀取時，使用什麼 Vue 組件來呈現
+  // 這個組件不可以是非同步載入
+  loading: LoadingComponent,
+  // 這裡可以指定在讀取錯誤時（包含超時），使用什麼 Vue 組件來呈現
+  // 這個組件不可以是非同步載入
+  error: ErrorComponent,
+  // 預設非同步組件延遲時間，這就是 200ms 由來（預設值）
+  // 如果設定為 3000，需等待 3 秒後 mounted 才會取得子組件的實體
+  delay: 200,
+  // 定義錯誤組件何時會顯示，預設是 Infinity
+  timeout: 3000,
+});
+```
+
+## 大量動態組件的載入
+
+可以利用 `computed` 和 `Promise` 來達成。
+
+```html{16,17,18,19,20,21,22}
 <template>
   <section>
     <div :is="loadedComponent"></div>
@@ -123,6 +174,7 @@ export default {
       loadedComponent () {
         return ((component => {
           return () => ({
+            // 因為內層會取不到組件實體，透過傳址方式，將狀態傳入
             component: import('@/components/' + component + '.vue')
           })
         })(this.activedComponent)
