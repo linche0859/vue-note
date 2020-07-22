@@ -1,13 +1,6 @@
-## 基本用法
+# 基礎使用
 
-```javascript
-import Vue from 'vue';
-import Router from 'vue-router';
-import App from '@/App.vue';
-import HelloWorld from '@/components/HelloWorld.vue';
-
-Vue.use(Router);
-
+```js
 const router = new Router({
   // 加入 HTML5 History API
   // 去除 # 號，較為美觀
@@ -19,15 +12,10 @@ const router = new Router({
       path: '/helloworld',
       component: HelloWorld,
       meta: {},
-      children: []
-    }
-  ]
+      children: [],
+    },
+  ],
 });
-
-new Vue({
-  router: router,
-  render: h => h(App)
-}).$mount('#app');
 ```
 
 ## 路由屬性
@@ -56,34 +44,29 @@ new Vue({
 - `beforeResolve` 當路由內部的所有路由防護規則都被解析之後執行，跟 `beforeEach` 一樣有三個參數。
 - `afterEach` 當路由結束操作後，會呼叫此函數。跟 `beforeEach` 一樣，但是沒有 next() 的回呼函式。
 
-## `routes`的屬性和方法
+## `routes` 的屬性和方法
 
 - `path` 路徑，從 `base` 開始算。
 - `name` 這一個路由的名稱，他會在一些路由方法中可以使用。
 - `component` 這個路由配置的 Vue 元件。
 - `components` 設置有命名規則的 Vue 元件。
-- `redirect` 重新導向路徑，可以是字串﹑Location 物件或是函式。
+- `redirect` 重新導向路徑，可以是字串、Location 物件或是函式。
 - `props` 將路由上面的正規配置當作屬性傳入元件當中，可以是布林值、物件或函式。
 - `alias` 路由別名，可以是字串或是字串組成的陣列。
-- `children` 嵌套路由，就是這個路由的兒子（你可以這麼理解沒問題）。
+- `children` 嵌套路由，就是這個路由的兒子。
 - `meta` 可傳入任何值，用於路由本身的資料集。
 - `beforeEnter` 進入此路由前，會先執行的防禦路由方法函式，自身會帶入 `to`, `from` 與 `next()` 參數。
 - `caseSensitive` 路由本身是否區身大小寫，僅接受布林值，預設為 `false`。
 
-## 範例
-
 **router/index.js**
 
-```javascript
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+```js
+// 路由位置來源
 import routes from './routes';
-
-Vue.use(VueRouter);
 
 const router = new VueRouter({
   mode: 'history',
-  routes
+  routes,
 });
 
 // 每一 router 拋轉頁面就會執行
@@ -91,17 +74,15 @@ router.beforeEach((to, from, next) => {
   console.log('call from beforeEach', to.meta);
   next();
 });
-
-export default router;
 ```
 
 **router/routers.js**
 
 ::: tip 注意
-最上層的 Route 的開頭就一定要有 `/` 的設定，不然會被警告，且會失效
+最上層的 Route 的開頭就一定要有 `/` 的設定，不然會被警告，且會失效。
 :::
 
-```javascript
+```js
 import Home from '../views/Home.vue';
 import HelloKittyWithId from '@/views/HelloKittyWithId';
 import HelloKittyWithName from '@/views/HelloKittyWithName';
@@ -111,7 +92,7 @@ export default [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: Home,
   },
   {
     path: '/about',
@@ -120,7 +101,7 @@ export default [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ '../views/About.vue')
+      import(/* webpackChunkName: "about" */ '../views/About.vue'),
   },
   {
     path: '/tree',
@@ -132,18 +113,19 @@ export default [
     },
     // meta 值會帶入公用路由，公用路由可藉由 beforeEach 方法，做防禦判斷
     meta: {
-      needLogin: true
+      needLogin: true,
     },
     component: () => import(/* webpackChunkName: "tree" */ '../views/Tree'),
-    // children 的路徑就會接續他老爸再繼續往後，記得不要在 path 加 /，不然他會回到根目錄去
+    // children 的路徑就會接續他老爸再繼續往後
+    // 記得不要在 path 加 /，不然他會回到根目錄去
     children: [
       {
         path: 'kitty',
         name: 'kitty',
         component: () =>
-          import(/* webpackChunkName: "kitty" */ '../views/Kitty')
-      }
-    ]
+          import(/* webpackChunkName: "kitty" */ '../views/Kitty'),
+      },
+    ],
   },
   {
     path: '/helloworld',
@@ -158,8 +140,8 @@ export default [
     },
     meta: {
       pageNeedLogin: true,
-      showFooter: false
-    }
+      showFooter: false,
+    },
   },
   {
     path: '/hellokitty',
@@ -174,36 +156,36 @@ export default [
         components: {
           default: HelloWithDefault,
           a: HelloKittyWithId,
-          b: HelloKittyWithName
+          b: HelloKittyWithName,
         },
         // 當有設定時，可以將 id 值傳入元件中
-        props: true
-      }
-    ]
+        props: true,
+      },
+    ],
   },
   {
     path: '/hellokitty2',
-    redirect: '/hellokitty'
+    redirect: '/hellokitty',
   },
   {
     path: '/hellokitty3',
-    redirect: { name: 'HelloKitty' }
+    redirect: { name: 'HelloKitty' },
   },
   {
     // 可以使用 * 來做萬用匹配
     path: '*',
     name: 'NotFound',
     component: () =>
-      import(/* webpackChunkName: "NotFound" */ '../views/NotFound')
-  }
+      import(/* webpackChunkName: "NotFound" */ '../views/NotFound'),
+  },
 ];
 ```
 
 ## Router 元件應用
 
-如使用嵌套路由，那麼你的嵌套路由**父元件**也是需要一組 `<router-view>` 來作為進入點
+如使用嵌套路由，那麼你的嵌套路由 **父組件** 也是需要一組 `<router-view>` 來作為進入點。
 
-```html
+```html{3}
 <template>
   <section>
     <router-view></router-view>
@@ -211,9 +193,9 @@ export default [
 </template>
 ```
 
-然而，`<router-view>` 有一個屬性 `name` 可以用，他的應用範圍，是將 Route 設定當中，有命名的元件來套用。在你的 Route 設定中，要使用 `components` 來設定，舉例來說
+然而，`<router-view>` 有一個屬性 `name` 可以用，他的應用範圍，是將 Route 設定當中，有命名的組件來套用。在你的 Route 設定中，要使用 `components` 來設定，舉例來說：
 
-```html
+```html{6}
 <template>
   <section>
     <!-- 這個區段會渲染 `default` 的元件 -->
@@ -226,12 +208,7 @@ export default [
 
 路由設定：
 
-```javascript
-import Router from 'vue-router';
-
-import HelloKitty from '@/components/HelloKitty.vue';
-import HelloWorld from '@/components/HelloWorld.vue';
-
+```js{7,8,9,10}
 const router = new Router({
   mode: 'history',
   routes: [
@@ -240,10 +217,10 @@ const router = new Router({
       name: 'HelloWorld',
       components: {
         default: HelloKitty,
-        a: HelloWorld
-      }
-    }
-  ]
+        a: HelloWorld,
+      },
+    },
+  ],
 });
 ```
 
@@ -262,9 +239,9 @@ const router = new Router({
 - `exact-active-class` 當路由正規規則 **完全符合** 時，會套用這個屬性所指定的類別名稱。預設會使用 `router-link-exact-active` 這個名稱。
 - `event` 觸發該路由的事件，預設是使用 `click` 事件
 
-關於上述的 `params`，所謂路由正規其實就是文章上面範例中，所提到的 id/:id 這樣的例子，而這個例子在 `<router-link>` 當中的設定，看起來就會像這個樣子：
+關於上述的 `params`，所謂路由正規其實就是上面範例中，所提到的 `id/:id` 這樣的例子，而這個例子在 `<router-link>` 當中的設定，看起來就會像這個樣子：
 
-```html
+```html{3,4,5}
 <template>
   <section>
     <router-link
@@ -276,13 +253,13 @@ const router = new Router({
 
 ---
 
-而在 Vue Router 3.1.0 版本之後，對於 `<router-link>` 則提供了一個插槽（ _Slot_ ）的新功能。這個功能可以讓你替換調原本 `<router-link>` 的結構，這個插槽提供了幾個數值讓你使用：
+而在 Vue Router 3.1.0 版本之後，對於 `<router-link>` 則提供了一個 **插槽 (Slot)** 的新功能。這個功能可以讓你替換調原本 `<router-link>` 的結構，這個插槽提供了幾個數值使用：
 
-- `href` 解析過後的網址，提供給 `A` 標籤的 `href` 使用的字串。但使用`A`標籤，網頁會重整，預防方式如下
+- `href` 解析過後的網址，提供給 `A` 標籤的 `href` 使用的字串。但使用 `A` 標籤，網頁會重整，可以使用 `prevent` 修飾子停止原生事件。
 - `route` 傳回一個 Route 的完整物件。
 - `navigate` 觸發路由的事件函式， **必要時會阻止此事件執行** 。
 - `isActive` 回傳路由正規是否符合，回傳值為布林值。
-- `isExactActive` 回傳路由正規是否 _完全符合_ ，回傳值為布林值。
+- `isExactActive` 回傳路由正規是否 **完全符合**，回傳值為布林值。
 
 ```html
 <router-link
@@ -295,14 +272,13 @@ const router = new Router({
 </router-link>
 ```
 
-```javascript
+```js{3,4,5}
 export default {
-  name: 'kitty',
   methods: {
     native({ ...req }) {
       this.$router.push({ name: req.route.name, params: req.route.params });
-    }
-  }
+    },
+  },
 };
 ```
 
@@ -310,7 +286,7 @@ export default {
 
 另外，由於 `<router-link>` 實際上只是幫你做路由的動作，所以，如果在 `<router-link>` 上面綁定了 `click` 的時候，會發現沒有被觸發：
 
-```html
+```html{4,6}
 <template>
   <section>
     <!--沒有觸發-->
@@ -323,4 +299,4 @@ export default {
 
 有沒有加入 `.native` 的差異在於，一般在 Vue 的事件綁定中，是以 `Vue-Event` 為主，而加上了 `.native` 則代表，你想要觸發的是 DOM 的原生事件。
 
-是的，在 `<router-link>` 這個元件上，需要用到 `.native` 來確保事件發生。不然，`<router-link>` 基本上都會直接忽略你所綁定的事件。
+在 `<router-link>` 這個元件上，需要用到 `.native` 來確保事件發生。不然，`<router-link>` 基本上都會直接忽略你所綁定的事件。

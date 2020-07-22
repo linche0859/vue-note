@@ -3,18 +3,18 @@
 ## 說明
 
 :::danger 注意
-如果取資料的方式是 `AJAX`，樣板會先渲染，後來才是資料
+如果取資料的方式是 `AJAX`，樣板會先渲染，後來才是資料。
 :::
 
-傳統作法會在 `created` 作取值 (非同步傳輸)，但其子元件也都要做 (原因：父元件可能還在 `created` 中取值，子元件已經走過 `created`)
+傳統作法會在 `created` 作取值 (非同步傳輸)，但其子組件也都要做 (原因：父組件可能還在 `created` 中取值，子組件已經走過 `created`)。
 
 ### 順序
 
-執行順序優先於 `beforeEach`
+執行順序優先於 `beforeEach`。
 
 ### Vuex 取值無效處
 
-雖然在 Plugin 中先賦予值（即便不是非同步拿的資料），在元件當中，還是得在 `created()` 之後才拿得到
+雖然在 Plugin 中先賦予值（即便不是非同步拿的資料），在組件當中，還是得在 `created()` 之後才拿得到資料。
 
 ```js
 export default {
@@ -31,7 +31,7 @@ export default {
   },
   mounted() {
     console.log(this.getUserData.name);
-  }
+  },
 };
 ```
 
@@ -44,7 +44,7 @@ TypeError: Cannot read property 'name' of undefined
 
 ## 範例
 
-**在 `Vuex.store` 中**
+**Vuex.store**
 
 ```js
 function fetchUserData() {
@@ -68,14 +68,14 @@ const store = new Vuex.Store({
 })
 ```
 
-如果 Plugin 拿不到資料的時候，一樣會出現錯誤
+如果 Plugin 拿不到資料的時候，一樣會出現錯誤。
 
 ::: tip 解法
 
 1.  只能在 Plugin 中先給 **預設值**
 1.  在取資料失敗的時候給 **預設值**
-1.  `dispatch` 或是 `commit` 拿到失敗的資料給 **預設值**
-1.  不管怎樣你就是要給 **預設值**
+1.  `dispatch` 或 `commit` 執行失敗的時候，給予資料 **預設值**
+1.  不管怎樣就是要給 **預設值**
 
 :::
 

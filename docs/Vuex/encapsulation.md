@@ -1,25 +1,22 @@
-# 封裝
-
-## `Module`
+# 模組封裝
 
 :::tip 說明
-`modules` 資料夾的 `index.js`，即自動引入各 `module` 狀態
+`modules` 資料夾的 `index.js`，即自動引入各 `module` 狀態。
 :::
 
 **modules/index.js**
 
 ```js
-// 將每個文件註冊為相應的 Vuex 模塊。
-// 模塊嵌套將反映[子]目錄層次結構，
-// 模塊的命名空間與它們文件名的camelCase等效。
-
+// 將每個文件註冊為相應的 Vuex 模組。
+// 模組嵌套將反映[子]目錄層次結構，
+// 模組的命名空間與它們文件名的 camelCase 等效。
 import camelCase from 'lodash/camelCase';
 
 const modulesCache = {};
 const storeData = { modules: {} };
 
 (function updateModules() {
-  // 讓我們動態地需要所有 Vuex 模塊文件。
+  // 讓我們動態地需要所有 Vuex 模組文件。
   // https://webpack.js.org/guides/dependency-management/#require-context
   const requireModule = require.context(
     // 在當前目錄中搜索文件。
@@ -30,15 +27,15 @@ const storeData = { modules: {} };
     /^((?!index|\.unit\.).)*\.js$/
   );
 
-  // 對於每個 Vuex 模塊...
-  requireModule.keys().forEach(fileName => {
+  // 對於每個 Vuex 模組...
+  requireModule.keys().forEach((fileName) => {
     const moduleDefinition =
       requireModule(fileName).default || requireModule(fileName);
 
-    // 如果熱加載過程中，引用的模塊定義與我們緩存的模塊定義相同，則跳過該模塊。
+    // 如果熱加載過程中，引用的模組定義與我們緩存的模組定義相同，則跳過該模組。
     if (modulesCache[fileName] === moduleDefinition) return;
 
-    // 更新模塊緩存，以進行有效的熱重裝。
+    // 更新模組緩存，以進行有效的熱重裝。
     modulesCache[fileName] = moduleDefinition;
 
     // Get the module path as an array.
@@ -55,11 +52,11 @@ const storeData = { modules: {} };
     // 獲取當前路徑的 modules 對象
     const { modules } = getNamespace(storeData, modulePath);
 
-    // 將模塊添加到我們的模塊對象
+    // 將模組添加到我們的模組對象
     modules[modulePath.pop()] = {
-      // 默認情況下，模塊使用命名空間。
+      // 默認情況下，模組使用命名空間。
       namespaced: true,
-      ...moduleDefinition
+      ...moduleDefinition,
     };
   });
 
@@ -75,7 +72,7 @@ const storeData = { modules: {} };
   }
 })();
 
-// 遞歸獲取 Vuex 模塊的名稱空間，即使嵌套也是如此。
+// 遞歸獲取 Vuex 模組的名稱空間，即使嵌套也是如此。
 function getNamespace(subtree, path) {
   if (path.length === 1) return subtree;
 
@@ -83,7 +80,7 @@ function getNamespace(subtree, path) {
   subtree.modules[namespace] = {
     modules: {},
     namespaced: true,
-    ...subtree.modules[namespace]
+    ...subtree.modules[namespace],
   };
   return getNamespace(subtree.modules[namespace], path);
 }
@@ -97,7 +94,7 @@ export default storeData.modules;
 import axios from 'axios';
 
 export const state = {
-  currentUser: getSavedState('auth.currentUser')
+  currentUser: getSavedState('auth.currentUser'),
 };
 
 export const mutations = {
@@ -105,14 +102,14 @@ export const mutations = {
     state.currentUser = newValue;
     saveState('auth.currentUser', newValue);
     setDefaultAuthHeaders(state);
-  }
+  },
 };
 
 export const getters = {
   // Whether the user is currently logged in.
   loggedIn(state) {
     return !!state.currentUser;
-  }
+  },
 };
 
 export const actions = {
@@ -127,11 +124,13 @@ export const actions = {
   logIn({ commit, dispatch, getters }, { username, password } = {}) {
     if (getters.loggedIn) return dispatch('validate');
 
-    return axios.post('/api/session', { username, password }).then(response => {
-      const user = response.data;
-      commit('SET_CURRENT_USER', user);
-      return user;
-    });
+    return axios
+      .post('/api/session', { username, password })
+      .then((response) => {
+        const user = response.data;
+        commit('SET_CURRENT_USER', user);
+        return user;
+      });
   },
 
   // Logs out the current user.
@@ -146,12 +145,12 @@ export const actions = {
 
     return axios
       .get('/api/session')
-      .then(response => {
+      .then((response) => {
         const user = response.data;
         commit('SET_CURRENT_USER', user);
         return user;
       })
-      .catch(error => {
+      .catch((error) => {
         if (error.response && error.response.status === 401) {
           commit('SET_CURRENT_USER', null);
         } else {
@@ -159,7 +158,7 @@ export const actions = {
         }
         return null;
       });
-  }
+  },
 };
 
 // ===
@@ -197,7 +196,7 @@ const store = new Vuex.Store({
   // Enable strict mode in development to get a warning
   // when mutating state outside of a mutation.
   // https://vuex.vuejs.org/guide/strict.html
-  strict: process.env.NODE_ENV !== 'production'
+  strict: process.env.NODE_ENV !== 'production',
 });
 
 export default store;
@@ -211,7 +210,7 @@ dispatchActionForAllModules('init');
 
 ### utils/DispatchActionForAllModules.js
 
-自動觸發每個 `module` 中指定 `action`
+自動觸發每個 `module` 中指定的 `action`。
 
 ```js
 import allModules from '@/store/modules';
@@ -241,7 +240,7 @@ export default function dispatchActionForAllModules(
       dispatchActionForAllModules(actionName, {
         modules: moduleDefinition.modules,
         modulePrefix: modulePrefix + moduleName + '/',
-        flags
+        flags,
       });
     }
   }
@@ -259,26 +258,26 @@ export default function dispatchActionForAllModules(
 
 ### store/help.js
 
-將 `state`、`getters`、`actions` 統一管理於此介面
+將 `state`、`getters`、`actions` 統一管理於此介面。
 
 ```js
 import { mapState, mapGetters, mapActions } from 'vuex';
 
 export const authComputed = {
   ...mapState('auth', {
-    currentUser: state => state.currentUser
+    currentUser: (state) => state.currentUser,
   }),
   ...mapState('user', {
-    cached: state => state.cached
+    cached: (state) => state.cached,
   }),
-  ...mapGetters('auth', ['loggedIn'])
+  ...mapGetters('auth', ['loggedIn']),
 };
 
 export const authMethods = mapActions('auth', ['logIn', 'logOut']);
 export const userMethods = mapActions('user', ['fetchUser']);
 ```
 
-元件中
+組件中
 
 ```js
 import { authComputed, authMethods, userMethods } from '@/store/help.js';
@@ -286,13 +285,11 @@ import { authComputed, authMethods, userMethods } from '@/store/help.js';
 export default {
   computed: {
     // mapAction 會將 actions 包成物件，需用 spread
-    ...authComputed
+    ...authComputed,
   },
   methods: {
     ...authMethods,
-    ...userMethods
-  }
+    ...userMethods,
+  },
 };
 ```
-
----

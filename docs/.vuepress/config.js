@@ -78,6 +78,7 @@ module.exports = {
         children: [
           'Component/feature',
           '/Component/props',
+          '/Component/eventbus',
           '/Component/is',
           '/Component/slot',
           '/Component/transition',
@@ -85,14 +86,9 @@ module.exports = {
         ],
       },
       {
-        title: 'EventBus',
-        path: '/EventBus/',
-        children: [],
-      },
-      {
         title: 'Vue Router',
-        path: '/Router/',
         children: [
+          '/Router/basic',
           '/Router/guide',
           '/Router/lifecycle',
           '/Router/encapsulation',
@@ -100,8 +96,8 @@ module.exports = {
       },
       {
         title: 'Vuex',
-        path: '/Vuex/',
         children: [
+          '/Vuex/basic',
           '/Vuex/module',
           '/Vuex/design',
           '/Vuex/encapsulation',

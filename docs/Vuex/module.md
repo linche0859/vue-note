@@ -2,7 +2,7 @@
 
 ## 分割
 
-將 `store` 分割成 `module`，每個 `module` 擁有自己的 `state`、`mutation`、`action`、`getter`
+將 `store` 分割成 `module`，每個 `module` 擁有自己的 `state`、`mutation`、`action`、`getter`。
 
 ```javascript
 const moduleA = {
@@ -32,7 +32,7 @@ store.state.moduleB // -> moduleB 的state狀態
 
 ## 作用域
 
-`module` 內部的 `mutation` 和 `getter`，接收的第一個參數為 **`Module` 作用域物件**
+`module` 內部的 `mutation` 和 `getter`，接收的第一個參數為 **`Module` 作用域物件**。
 
 ```js
 const moduleA = {
@@ -44,7 +44,7 @@ const moduleA = {
     increment(state) {
       // state: Module 作用域物件
       state.count++;
-    }
+    },
   },
 
   getters: {
@@ -52,12 +52,12 @@ const moduleA = {
     // 或: $store.rootGetters.doubleCount
     doubleCount(state) {
       return state.count * 2;
-    }
-  }
+    },
+  },
 };
 ```
 
-`action` 同樣也是使用 `Module` 作用域物件
+`action` 同樣也是使用 `Module` 作用域物件。
 
 ```javascript
 const moduleA = {
@@ -70,33 +70,33 @@ const moduleA = {
       if ((state.count + rootState.count) % 2 === 1) {
         commit('increment');
       }
-    }
-  }
+    },
+  },
 };
 ```
 
 ## 命名空間
 
-默認情況下，模塊內部的 `action`、`mutation` 和 `getter` 是註冊在**全域**命名空間的。
+默認情況下，模組內部的 `action`、`mutation` 和 `getter` 是註冊在 **全域** 的命名空間。
 
-這樣使得多個模塊能夠對同一 `mutation` 或 `action` 作出響應。
+這樣使得多個模組能夠對同一 `mutation` 或 `action` 作出響應。
 
-通過添加 `namespaced: true` 的方式使其成為帶命名空間的模塊。
+通過添加 `namespaced: true` 的方式使其成為帶命名空間的模組。
 
-當模塊被註冊後，它的所有 `getter`、`action` 及 `mutation` 都會自動根據**模塊註冊的路徑**調整命名。
+當模組被註冊後，它的所有 `getter`、`action` 及 `mutation` 都會自動根據 **模組註冊的路徑** 調整命名。
 
 ![namespaced](./namespaced.jpg)
 
 ### 範例
 
-```javascript
+```js{4,31}
 const store = new Vuex.Store({
   modules: {
     account: {
       namespaced: true,
 
-      // 模塊內容（module assets）
-      // 模塊內的狀態已經是嵌套的了，使用 namespaced 屬性不會對其產生影響
+      // 模組內容（module assets）
+      // 模組內的狀態已經是嵌套的了，使用 namespaced 屬性不會對其產生影響
       state: { ... },
       getters: {
         isAdmin () { ... } // -> getters['account/isAdmin']
@@ -108,9 +108,9 @@ const store = new Vuex.Store({
         login () { ... } // -> commit('account/login')
       },
 
-      // 嵌套模塊
+      // 嵌套模組
       modules: {
-        // 繼承父模塊的命名空間
+        // 繼承父模組的命名空間
         myPage: {
           state: { ... },
           getters: {
@@ -121,7 +121,6 @@ const store = new Vuex.Store({
         // 進一步嵌套命名空間
         posts: {
           namespaced: true,
-
           state: { ... },
           getters: {
             popular () { ... } // -> getters['account/posts/popular']
@@ -133,9 +132,9 @@ const store = new Vuex.Store({
 })
 ```
 
-在 `mapActions`，`mapMutations` 與 `mapGetters` 都適用
+在 `mapActions`，`mapMutations` 與 `mapGetters` 中皆需也使用模組的註冊名稱作為呼叫的路徑。
 
-```js
+```js{6,7,8,9}
 import { mapGetters } from 'vuex';
 
 export default {
@@ -143,21 +142,21 @@ export default {
   computed: {
     ...mapGetters({
       getAAge: 'a/getAAge',
-      getBAge: 'getBAge'
-    })
-  }
+      getBAge: 'getBAge',
+    }),
+  },
 };
 ```
 
 ## 命名空間的綁定函數
 
-使用 `mapState`、`mapGetters`、`mapActions` 和 `mapMutations`
+使用 `mapState`、`mapGetters`、`mapActions` 和 `mapMutations`。
 
-可以通過使用 `createNamespacedHelpers` 創建基於某個命名空間輔助函數
+可以通過使用 `createNamespacedHelpers` 創建基於某個命名空間輔助函數。
 
-> 可用於找**本身和別人**的 `state`
+> 可用於找 **自身和其他模組** 的 `state`
 
-```javascript
+```js{2,4}
 // 注意這一段
 import { createNamespacedHelpers } from 'vuex';
 
@@ -167,17 +166,17 @@ export default {
   computed: {
     // 在 `some/nested/module` 中查找
     ...mapState({
-      a: state => state.a,
-      b: state => state.b
+      a: (state) => state.a,
+      b: (state) => state.b,
     }),
     ...mapGetters({
-      getAAge: 'getAge'
-    })
+      getAAge: 'getAge',
+    }),
   },
   methods: {
     // 在 `some/nested/module` 中查找
-    ...mapActions(['foo', 'bar'])
-  }
+    ...mapActions(['foo', 'bar']),
+  },
 };
 ```
 

@@ -78,13 +78,13 @@
 
 ## 不是 `Props` 的 DOM 屬性
 
-如果在組件上設定屬性並沒有在組件中的 `props` 被定義，這個屬性會直接套用在組件的 **根元素** 上
+如果在組件上設定屬性並沒有在組件中的 `props` 被定義，這個屬性會直接套用在組件的 **根元素** 上。
 
-範例如下方
+範例如下方。
 
 ## 合併父組件及子組件屬性
 
-`class` 及 `style` 在合併父組件及子組件時會將父子組件所有的屬性合併
+`class` 及 `style` 在合併父組件及子組件時會將父子組件所有的屬性合併。
 
 **子組件**
 
@@ -111,7 +111,7 @@ Vue.component('kebab-case-converter', {
 
 **結果**
 
-父組件的 `class` 屬性會跟子組件的 `class` 做合併
+父組件的 class 屬性會跟子組件的 class 做合併。
 
 ```html
 <div class="thick italic" data-test="test data">kabeb-case : hello</div>
@@ -121,7 +121,7 @@ Vue.component('kebab-case-converter', {
 
 除了 `class` 及 `style` 之外的其他屬性都會是由父組件蓋掉子組件屬性值
 
-**子組件 template**
+**子組件**
 
 ```html
 <div class="thick" data-test="child">kabeb-case : {{kababCase}}</div>
@@ -147,7 +147,7 @@ Vue.component('kebab-case-converter', {
 
 父組件的屬性蓋掉子組件的值有時會產生非預期的結果，為了避免這樣的問題， Vue 提供了 `inheritAttrs` 這個參數，它可以將組件設為不要帶入父組件的屬性值(只有那些沒有設定於子組件 `porps` 中的屬性值不會被帶入)。
 
-`inheritAttrs` 常常搭配 `$attrs` 這個物件設定， `$attrs` 是 _父組件_ 的屬性集合(沒有包含 `props` 中的屬性值)，有時我們不想將屬性值設於根元素中，可以使用 `inheritAttrs` 取消綁定屬性到根元素的行為，並且使用 `$attrs` 將屬性值綁定要我們期望的元素上。
+`inheritAttrs` 常常搭配 `$attrs` 這個物件設定， `$attrs` 是 **父組件的屬性集合(沒有包含 `props` 中的屬性值)**，有時我們不想將屬性值設於根元素中，可以使用 `inheritAttrs` 取消綁定屬性到根元素的行為，並且使用 `$attrs` 將屬性值綁定要我們期望的元素上。
 
 :::warning 注意
 `class` 跟 `style` 不會受 `inheritAttrs` 效果影響，也不會包在 `$attrs` 物件上。
@@ -155,7 +155,7 @@ Vue.component('kebab-case-converter', {
 
 **子組件**
 
-```js
+```js{2}
 Vue.component('base-checkbox', {
   inheritAttrs: false,
   model: {
@@ -197,15 +197,15 @@ Vue.component('base-checkbox', {
 ```
 
 - `class` 因 `inheritAttrs` 及 `$attrs` 對 `class` 無效，所以還是在 **根元素** 上。
-- `data-test` 因 `inheritAttrs` 的影響，所以 _不會_ 出現在根元素上，但因 `$attrs` 綁定，所以會在 `input` 上。
+- `data-test` 因 `inheritAttrs` 的影響，所以 **不會** 出現在根元素上，但因 `$attrs` 綁定，所以會在 `input` 上。
 
 ## 客製組件的 `v-model`
 
 `v-model` 是 `v-bind:value` 及 `v-on:input` 的語法糖，它的作用是做 **雙向綁定**，但有些像是 `radio` 及 `checkbox` 需要 `value` 去綁定各別選項的值，而真正勾選的值是由像是 `checked` 之類的屬性綁定，為了避免 `v-model` 產生衝突，可以將 `model` 改為 `v-bind:checked` 及 `v-on:change` 來讓 `v-model` 運作正常。
 
-**`checkbox` 的 `v-model`**
+checkbox 的 `v-model`：
 
-```js
+```js{14,15}
 Vue.component('base-checkbox', {
   model: {
     // 預設為 value
@@ -228,22 +228,24 @@ Vue.component('base-checkbox', {
 });
 ```
 
-`model` 物件，這個物件有兩個屬性 `prop` 及 `event` :
+### `model` 物件
+
+這個物件有兩個屬性 `prop` 及 `event` :
 
 - `prop` : 目標屬性。
 - `event` : 監聽的事件。
 
 ## 綁定原生事件
 
-替整個 `component` 加上事件(`click`，`focus`)，需使用 `.native` 修飾詞
+替整個組件加上事件(`click`，`focus`)，需使用 `.native` 修飾詞。
 
 ```html
 <base-input @focus.native="onFocus"></base-input>
 ```
 
-但如果當 `base-input` 為
+但如果當 `base-input` 為：
 
-```html
+```html{1,8}
 <label>
   {{ label }}
   <input
@@ -258,14 +260,14 @@ Vue.component('base-checkbox', {
 
 **修改子組件**
 
-```html
+```html{3}
 <label>
   {{label}}
   <input v-bind="$attrs" v-bind:value="value" v-on="$listeners" />
 </label>
 ```
 
-將父組件中的 `focus` 事件 **拿掉** `native` 修飾符
+將父組件中的 `focus` 事件 **拿掉** `native` 修飾符。
 
 ```html
 <base-input-with-label @focus="onFocus"></base-input-with-label>
@@ -279,7 +281,8 @@ Vue.component('base-checkbox', {
 Vue.component('base-input-with-label', {
   props: ['value'],
   computed: {
-    // 透過 DevTool 可以看到，只有 input 事件是可以觸發的，其它的因為未定義，而是 invoke
+    // 透過 DevTool 可以看到，只有 input 事件是可以觸發的
+    // 其它的因為未定義，而是 invoke
     inputListeners() {
       const vm = this;
       // 使用 Object.assign 合併物件

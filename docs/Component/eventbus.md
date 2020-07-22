@@ -1,5 +1,7 @@
+# EventBus
+
 :::tip 說明
-主用於 **事件** 傳遞，不含 **值** 的傳遞
+主用於 **事件** 傳遞，不含 **值** 的傳遞。
 :::
 
 ## 事件傳遞
@@ -33,7 +35,7 @@ export default new OldDriver();
 
 **main.js**
 
-```js
+```js{10}
 import EventBus from '@/extends/oldDriver.js';
 Object.defineProperties(Vue.prototype, {
   $eventBus: {
@@ -51,29 +53,25 @@ new Vue({
 
 **App.vue**
 
-```js
-import EventBus from '@/extends/oldDriver.js';
-
+```js{6}
 export default {
   name: 'App',
-  components: {
-    HelloKitty
-  },
   mounted() {
     setTimeout(() => {
-      EventBus.$emit('changeAge', 30);
+      // 觸發事件
+      this.$eventBus.$emit('changeAge', 30);
     }, 3000);
-  }
+  },
 };
 ```
 
 ## 值的傳遞
 
-> 利用 Vue 特性
+> 利用 Vue 的特性
 
 **main.js**
 
-```js
+```js{3,11}
 import Vue from 'vue';
 
 Vue.prototype.$eventBus = new Vue();
@@ -90,26 +88,28 @@ new Vue({
 }).$mount('#app')
 ```
 
-**子元件**
+**子組件**
 
-```js
+```js{4}
 export default {
   name: 'About',
   mounted() {
     console.log(this.$eventBus._events['changeAge'][0].apply());
-  }
+  },
 };
 ```
 
-### 提醒
+:::tip 提醒
 
 - 事件的 **命名** 一樣的時候，回呼函式需根據 **索引** 對應相對事件。
 
-  ![events](./events.jpg)
+  ![events](./eventbus.jpg)
 
 - 若移除時不指定回呼函式，則 **相同命名** 的事件會一起被移除。
 - 若想知道綁定了什麼事件，可以查看 `_events` 這個物件。
   - 在 `_events` 物件中，同名事件會以陣列的方式堆疊。
+
+:::
 
 ## 綜合應用
 
@@ -152,12 +152,12 @@ export default function Bus(vue) {
     }
   };
   // 刪除 component 的 uid
-  this.$offByUid = uid => {
+  this.$offByUid = (uid) => {
     let eventObj = this.eventUidMap[uid] || {};
     // 遍遞每一個 event
-    Object.keys(eventObj).forEach(event => {
+    Object.keys(eventObj).forEach((event) => {
       // 遍地每一個 event 的 function
-      eventObj[event].forEach(cb => {
+      eventObj[event].forEach((cb) => {
         this.$off(event, cb);
       });
       // delete all event
@@ -194,35 +194,34 @@ let eventBus = {
     // 因為要做成唯讀
     Object.defineProperties(Vue.prototype, {
       $eventBus: {
-        get: () => bus
-      }
+        get: () => bus,
+      },
     });
     // 所有的 component，都可以有 mixin 內的功能
     Vue.mixin({
       beforeDestroy() {
-        // this是VueComponent
+        // this 是 VueComponent
         this.$eventBus.$offByUid(this._uid);
-      }
+      },
     });
-  }
+  },
 };
-// 預設把 Vue傳進去
-// 因為 Vue.prototype.$eventBus 了，VueComponent 同時也有「$eventBus」
+// 預設會自動把 Vue 傳進去
 Vue.use(eventBus);
 ```
 
-**父層註冊事件**
+父組件註冊事件：
 
-```javascript
+```js{22,23}
 export default {
   name: 'levelOne',
   data() {
     return {
-      list: ['html', 'css', 'javascript']
+      list: ['html', 'css', 'javascript'],
     };
   },
   components: {
-    LevelTwo
+    LevelTwo,
   },
   methods: {
     eventHandler(...arg) {
@@ -231,37 +230,37 @@ export default {
     },
     getListHandler() {
       return { list: this.list };
-    }
+    },
   },
   created() {
     // 新增事件到 event bus
     this.$eventBus.$on('getListHandler', this.getListHandler, this);
     this.$eventBus.$on('eventHandler', this.eventHandler, this);
-  }
+  },
 };
 ```
 
-**子層接收呼叫事件和接收資料**
+子組件呼叫事件和接收資料：
 
-```javascript
+```js{10,11,12,13,14,15,16,17}
 export default {
   name: 'levelTwo',
   data() {
     return {
-      list: []
+      list: [],
     };
   },
   methods: {
     displayListHandler() {
-      this.$eventBus.$emit('getListHandler').forEach(item => {
+      this.$eventBus.$emit('getListHandler').forEach((item) => {
         // 沒有回傳值的，會是 undefined
         if (item) {
-          Object.keys(item).forEach(key => {
+          Object.keys(item).forEach((key) => {
             if (key === 'list') this.list = item[key];
           });
         }
       });
-    }
-  }
+    },
+  },
 };
 ```

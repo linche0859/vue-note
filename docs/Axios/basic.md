@@ -10,7 +10,7 @@
 
 :::
 
-## Get
+## GET
 
 ```js
 // 網址帶參數 或 傳入 params 物件
@@ -42,7 +42,7 @@ axios
   });
 ```
 
-## Config 設定
+## Config 運用
 
 ```js
 axios({
@@ -60,7 +60,7 @@ axios({
   });
 ```
 
-## axios API 運用
+## API 運用
 
 使用下列方式，可以不需將 `url`、`method`、`data` 寫在 `config` 裏面。
 
@@ -233,7 +233,7 @@ const config = {
   // 資料發送至伺服器前，可作資料處理
   // 陣列中最後的函式必須返回字串、ArrayBuffer、Stream
   transformRequest: [
-    function (data) {
+    function(data) {
       // 作資料轉換
       return data;
     },
@@ -241,7 +241,7 @@ const config = {
 
   // 在進入 then / catch 前可作資料處理
   transformResponse: [
-    function (data) {
+    function(data) {
       // 作資料轉換
       return data;
     },

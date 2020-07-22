@@ -1,4 +1,4 @@
-# 設計
+# 設計模式
 
 ```sh
 ├── index.html
@@ -9,10 +9,10 @@
 │   ├── App.vue
 │   └── ...
 └── store
-    ├── index.js          # 我們組裝模塊並導出 store 的地方
+    ├── index.js          # 我們組裝模組並導出 store 的地方
     ├── actions.js        # 根級別的 action
     ├── mutations.js      # 根級別的 mutation
     └── modules
-        ├── cart.js       # 購物車模塊
-        └── products.js   # 產品模塊
+        ├── cart.js       # 購物車模組
+        └── products.js   # 產品模組
 ```

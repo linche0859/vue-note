@@ -1,4 +1,4 @@
-# 封裝
+# 路由封裝
 
 **router/index.js**
 
@@ -15,7 +15,7 @@ import routes from './routes';
 Vue.use(VueRouter);
 Vue.use(VueMeta, {
   // The component option name that vue-meta looks for meta info on.
-  keyName: 'page'
+  keyName: 'page',
 });
 
 const router = new VueRouter({
@@ -32,7 +32,7 @@ const router = new VueRouter({
     } else {
       return { x: 0, y: 0 };
     }
-  }
+  },
 });
 
 // 在評估每條路線之前...
@@ -45,7 +45,7 @@ router.beforeEach((routeTo, routeFrom, next) => {
 
   // 檢查此路由上是否需要身份驗證（包括嵌套路線）。
   // 檢查路由的 meta 是否有 authRequired 屬性
-  const authRequired = routeTo.matched.some(route => route.meta.authRequired);
+  const authRequired = routeTo.matched.some((route) => route.meta.authRequired);
 
   // 如果路由不需要身份驗證，請繼續。
   if (!authRequired) return next();
@@ -53,7 +53,7 @@ router.beforeEach((routeTo, routeFrom, next) => {
   // 如果需要驗證並且用戶已登錄...
   if (store.getters['auth/loggedIn']) {
     // 驗證本地用戶令牌...
-    return store.dispatch('auth/validate').then(validUser => {
+    return store.dispatch('auth/validate').then((validUser) => {
       // 如果令牌仍然代表有效用戶，請繼續，否則重定向到登錄
       validUser ? next() : redirectToLogin();
     });
@@ -128,7 +128,7 @@ export default [
   {
     path: '/',
     name: 'home',
-    component: () => lazyLoadView(import('@/views/home.vue'))
+    component: () => lazyLoadView(import('@/views/home.vue')),
   },
   {
     path: '/login',
@@ -144,21 +144,21 @@ export default [
           // Continue to the login page
           next();
         }
-      }
-    }
+      },
+    },
   },
   {
     path: '/profile',
     name: 'profile',
     component: () => lazyLoadView(import('@views/profile.vue')),
     meta: {
-      authRequired: true
+      authRequired: true,
     },
     // 可以將 user 作為 props 傳入
     // 官方建議，盡量保持 props 為無狀態，因它只會在路由發生變化時起作用
     // 如果需要狀態來定義 props，需將其包裝
     // 參考： t.ly/0EEgl
-    props: route => ({ user: store.state.auth.currentUser || {} })
+    props: (route) => ({ user: store.state.auth.currentUser || {} }),
   },
   {
     path: '/profile/:username',
@@ -173,7 +173,7 @@ export default [
         store
           // Try to fetch the user's information by their username
           .dispatch('users/fetchUser', { username: routeTo.params.username })
-          .then(user => {
+          .then((user) => {
             // Add the user to `meta.tmp`, so that it can
             // be provided as a prop.
             routeTo.meta.tmp.user = user;
@@ -185,10 +185,10 @@ export default [
             // found, redirect to the 404 page.
             next({ name: '404', params: { resource: 'User' } });
           });
-      }
+      },
     },
     // 一旦在 beforeResolve 路由防護中設置了用戶，就可以從路由參數中設置 user。
-    props: route => ({ user: route.meta.tmp.user })
+    props: (route) => ({ user: route.meta.tmp.user }),
   },
   {
     path: '/logout',
@@ -198,12 +198,12 @@ export default [
       beforeResolve(routeTo, routeFrom, next) {
         store.dispatch('auth/logOut');
         const authRequiredOnPreviousRoute = routeFrom.matched.some(
-          route => route.meta.authRequired
+          (route) => route.meta.authRequired
         );
         // Navigate back to previous page, or home as a fallback
         next(authRequiredOnPreviousRoute ? { name: 'home' } : { ...routeFrom });
-      }
-    }
+      },
+    },
   },
   {
     path: '/404',
@@ -211,14 +211,14 @@ export default [
     component: require('@/views/_404.vue').default,
     // Allows props to be passed to the 404 page through route
     // params, such as `resource` to define what wasn't found.
-    props: true
+    props: true,
   },
   // 將所有不匹配的路由重定向到404頁面， 這可能需要一些服務器配置才能在生產中工作
   // t.ly/9LLEZ
   {
     path: '*',
-    redirect: '404'
-  }
+    redirect: '404',
+  },
 ];
 
 // Lazy-loads view components, but with better UX. A loading view
@@ -247,7 +247,7 @@ function lazyLoadView(AsyncView) {
     error: require('@/views/_timeout.vue').default,
     // 放棄嘗試加載元件之前的時間。
     // Default: Infinity (milliseconds).
-    timeout: 10000
+    timeout: 10000,
   });
 
   return Promise.resolve({
@@ -255,7 +255,7 @@ function lazyLoadView(AsyncView) {
     render(h, { data, children }) {
       // 透明地將所有道具或子級傳遞到視圖元件。
       return h(AsyncHandler, data, children);
-    }
+    },
   });
 }
 ```
