@@ -182,14 +182,16 @@ export default {
 
 ## 第三個參數
 
-在 `namespaced: true` 下，`commit` 和 `dispatch` 的第三個參數可以指定 `{ root: true }`，表示從 Vuex 根元件做呼叫一個方法，他可以根據 Module 的設定來 **戳** 到指定的目標。
+在 `namespaced: true` 下，`commit` 和 `dispatch` 的第三個參數可以指定 `{ root: true }`，表示從 **Vuex 根元件** 呼叫一個方法，他可以根據 Module 的設定來 **戳** 到指定的目標。
 
 ```js
 store.commit('a/other/module', {}, { root: true });
 store.dispatch('a/other/module', {}, { root: true });
 ```
 
-使用情境：不同的 Module 當中，需要去呼叫 其他的 Module 的時候，必須要加上這個參數，這樣才能觸發到想要的目標。沒有設定的話，則會報錯。
+使用情境：在本身的 Module 中，需要去呼叫其他 Module 的時候，必須要加上這個參數，這樣才能觸發到想要的目標。不然依照 `namespaced: true` 的設定，在 Module 裡面的 `commit` 都是觸發本地端 (Local state) 的方法 (包括 `commit` 或是 `dispatch`)。
+
+所以，Module 是 `namespaced: true` 的話，第三個參數沒有設定，就會被回報錯誤。
 
 ## 參考
 

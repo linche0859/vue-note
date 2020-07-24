@@ -35,15 +35,6 @@ const router = new Router({
 - `stringifyQuery` 反解析查詢字串的自定義函式，會覆蓋預設函式。
 - `fallback` 僅接受布林值，當你的路由模式不支援 History API 時，會退回去使用 URL hash 的方式，預設為 true
 
-## 常用路由方法
-
-- `beforeEach` 當路由開始進入之前，會執行此函式。函式會回傳三個參數，
-  - `to` 將要前往的 Route 物件實例。
-  - `from` 來源的 Route 物件實例。
-  - `next` 這形同於回呼函式，你必須要呼叫他 `next()` 他才會繼續往下做。
-- `beforeResolve` 當路由內部的所有路由防護規則都被解析之後執行，跟 `beforeEach` 一樣有三個參數。
-- `afterEach` 當路由結束操作後，會呼叫此函數。跟 `beforeEach` 一樣，但是沒有 next() 的回呼函式。
-
 ## `routes` 的屬性和方法
 
 - `path` 路徑，從 `base` 開始算。

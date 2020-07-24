@@ -11,7 +11,7 @@
               value="header"
               v-model="dynamicSlotName"
             />
-            <label class="form-check-label" for="headerRadio">Header radio</label>
+            <label class="form-check-label" for="headerRadio">Only show header</label>
           </div>
         </div>
         <div class="col-auto">
@@ -23,7 +23,7 @@
               value="footer"
               v-model="dynamicSlotName"
             />
-            <label class="form-check-label" for="footerRadio">Footer radio</label>
+            <label class="form-check-label" for="footerRadio">Only show footer</label>
           </div>
         </div>
         <div class="col-auto">
@@ -48,20 +48,20 @@ export default {
   // 動態的具名插槽範例
   name: "DynamicNamedSlot",
   components: {
-    LightBox
+    LightBox,
   },
   props: {},
   data() {
     return {
       show: false,
-      dynamicSlotName: "header"
+      dynamicSlotName: "header",
     };
   },
   computed: {},
   watch: {},
   created() {},
   mounted() {},
-  methods: {}
+  methods: {},
 };
 </script>
 

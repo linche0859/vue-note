@@ -153,42 +153,134 @@ const HelloWorld = () => ({
 
 ## 大量動態組件的載入
 
-可以利用 `computed` 和 `Promise` 來達成。
+1. 利用 `computed` 和 `Promise` 來達成。
 
-```html{16,17,18,19,20,21,22}
-<template>
-  <section>
-    <div :is="loadedComponent"></div>
-  </section>
-</template>
+   ```html{16,17,18,19,20,21,22}
+   <template>
+     <section>
+       <div :is="loadedComponent"></div>
+     </section>
+   </template>
 
-<script>
-  export default {
-    name: 'App',
-    data () {
-      return {
-        activedComponent: 'Tab1'
-      }
-    },
-    computed: {
-      loadedComponent () {
-        return ((component => {
-          return () => ({
-            // 因為內層會取不到組件實體，透過傳址方式，將狀態傳入
-            component: import('@/components/' + component + '.vue')
-          })
-        })(this.activedComponent)
-      }
-    }
-  }
-</script>
-```
+   <script>
+     export default {
+       name: 'App',
+       data () {
+         return {
+           activedComponent: 'Tab1'
+         }
+       },
+       computed: {
+         loadedComponent () {
+           return ((component => {
+             return () => ({
+               // 因為內層會取不到組件實體，透過傳址方式，將狀態傳入
+               component: import('@/components/' + component + '.vue')
+             })
+           })(this.activedComponent)
+         }
+       }
+     }
+   </script>
+   ```
+
+1. 利用 `Vue.options` 來達成。
+
+   先來說說 `options` 下包含了些什麼：
+
+   | 屬性                                                                  | 說明                                             |
+   | --------------------------------------------------------------------- | ------------------------------------------------ |
+   | components                                                            | 當前有幾個組件載入了                             |
+   | name                                                                  | 當下的組件名稱                                   |
+   | data                                                                  | 當下組件所設定的預設資料集                       |
+   | <ul><li>directives</li><li>filters</li></ul>                          | 當下組件當中是否有設定過濾器或是自定義指令       |
+   | <ul><li>beforeCreate</li><li>beforeDestroy</li><li>mounted </li></ul> | 當下組件中，所設定過的相對應方法會出現在這些地方 |
+   | render                                                                | 使用的渲染函式                                   |
+   | staticRenderFns                                                       | 這個很特別，是用來作一些渲染優化或是快取的       |
+
+   ### 實作方式
+
+   1. 在 `extends` 目錄下新增 `global-component.js`。
+
+   ```js
+   import HelloKitty from '@/components/HelloKitty.vue';
+   import HelloWorld from '@/components/HelloWorld.vue';
+
+   Vue.component('HelloKitty', HelloKitty);
+   Vue.component('HelloWorld', HelloWorld);
+   ```
+
+   2. 如果需要在 `App.vue` 中引用大量組件，可以使用這種寫法。
+
+   ```js{12,13,14}
+   import Vue from 'vue';
+
+   export default {
+     name: 'App',
+     data() {
+       return {
+         myComponent: 'HelloKitty',
+         loadedComponent: null,
+       };
+     },
+     created() {
+       if (typeof Vue.options.components[this.myComponent] !== 'undefined') {
+         this.loadedComponent = Vue.options.components[this.myComponent];
+       }
+     },
+   };
+   ```
+
+   3. 入口的 `main.js` 引入 `global-component.js`。
+
+   ```js
+   require('./extends/global-component.js');
+   ```
+
+   ***
+
+   來比較在 `App.vue` 中把組件依依 `import` 進來的差異。
+
+   如果按照正規的作法，應該會這樣做：
+
+   ```html
+   <template>
+     <div id="#app">
+       <header :is="headerComponent"></header>
+       <main :is="mainComponent"></main>
+       <footer :is="footerComponent"></footer>
+     </div>
+   </template>
+   ```
+
+   `<script>` 的部分：
+
+   ```js
+   import Header0 from '@/components/header0.vue';
+   import Header1 from '@/components/header1.vue';
+   import Header2 from '@/components/header2.vue';
+   import Header3 from '@/components/header3.vue';
+   import Header4 from '@/components/header4.vue';
+   import Header5 from '@/components/header5.vue';
+   import Header6 from '@/components/header6.vue';
+   import Header7 from '@/components/header7.vue';
+   import Header8 from '@/components/header8.vue';
+   import Header9 from '@/components/header9.vue';
+
+   import Main0 from '@/components/main0.vue';
+   // 以下類推
+
+   import Footer0 from '@/components/footer0.vue';
+   // 以下類推
+   ```
+
+   每次要修改，或是新增，都得改這個 `App.vue` 才行，而在除了 `App.vue` 外也想引用上面這些組件，就必須再重寫一次，後續的維護上也相當不容易。
 
 ## 解析 DOM 模板時的注意事項
 
 在 `<ul>`、`<ol>`、`<table>` 和 `<select>`中，盡量 **勿使用** 如：
 
-```html
+```html{2}
 <table>
   <tr-component></tr-component>
 </table>

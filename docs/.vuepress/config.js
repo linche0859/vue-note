@@ -84,6 +84,8 @@ module.exports = {
           '/Component/transition',
           '/Component/global',
           '/Component/import-require',
+          '/Component/loader',
+          '/Component/jsx',
         ],
       },
       {

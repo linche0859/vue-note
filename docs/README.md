@@ -25,6 +25,8 @@
 - [漸變與動畫](/Component/transition.md)
 - [全域封裝](/Component/global.md)
 - [import 和 require 的運用](/Component/import-require.md)
+- [沒有 webpack 打造 vue loader 環境](/Component/loader.md)
+- [渲染函式和 JSX](/Component/jsx.md)
 
 ## Vue Router
 
