@@ -96,6 +96,46 @@ export default {
 };
 ```
 
+### 搭配 `v-for` 的使用
+
+1. 子組件的引入
+
+   ```js
+   import Color from '@/components/Color.vue';
+   import Line from '@/components/Line.vue';
+   import Header from '@/components/Header.vue';
+   import Footer from '@/components/Footer.vue';
+
+   export default {
+     components: {
+       Color,
+       Line,
+       Header,
+       Footer,
+     },
+   };
+   ```
+
+1. 父組件的 `componentList` 狀態值將引入的組件都加入至陣列中，如：`['Color','Line','Header','Footer']`
+1. 父組件的 template 使用 `v-for` 和 `is` 來將組件動態引入
+
+   ```html{2,4}
+   <component
+     v-for="(item,index) in componentList"
+     :key="index"
+     :is="item"
+   ></component>
+   ```
+
+1. 編譯後的結果會像是這樣
+
+   ```html
+   <Color></Color>
+   <Line></Line>
+   <header></header>
+   <footer></footer>
+   ```
+
 ## 非同步載入的 200ms
 
 ```html{18,19,20,21,22,23}

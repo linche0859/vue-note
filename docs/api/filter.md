@@ -38,6 +38,25 @@ const vm = new Vue({
 
 所以一直以來，`filters` 都只被用來處理文字或屬性的格式化。
 
+## 全域註冊
+
+1. 新增 `global/filter.js`
+
+   ```js
+   let dateServer = (value) =>
+     value.replace(/(\d{4})(\d{2})(\d{2})/g, '$1-$2-$3');
+
+   export default { dateServer };
+   ```
+
+1. `main.js`
+
+   ```js
+   import * as filters from './global/filter';
+
+   Object.keys(filters).forEach((key) => Vue.filter(key, filters[key]));
+   ```
+
 ## 參考
 
 [補充 - Vue Filters](https://book.vue.tw/CH1/1-3.html)

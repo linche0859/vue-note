@@ -5,10 +5,13 @@
 - [實體](basic/instance.md)
 - [事件處理](basic/event.md)
 - [條件判斷與列表渲染](basic/condition.md)
+- [動態指令參數](basic/dynamic-command.md)
+- [組件的生命週期](basic/life-cycle.md)
 
 ## 全局 API
 
 - [Vue.filter](/api/filter.md)
+- [Vue.observable](/api/observable.md)
 
 ## 實例方法
 

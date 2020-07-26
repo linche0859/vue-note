@@ -63,11 +63,17 @@ module.exports = {
       {
         title: '基礎入門',
         // collapsable: false,
-        children: ['/basic/instance', '/basic/event', '/basic/condition'],
+        children: [
+          '/basic/instance',
+          '/basic/event',
+          '/basic/condition',
+          '/basic/dynamic-command',
+          '/basic/life-cycle',
+        ],
       },
       {
         title: '全局 API',
-        children: ['/api/filter'],
+        children: ['/api/filter', '/api/observable'],
       },
       {
         title: '實例方法',
