@@ -35,9 +35,9 @@ Vue.component('anchored-heading', {
   props: {
     level: {
       type: Number,
-      required: true,
-    },
-  },
+      required: true
+    }
+  }
 });
 ```
 
@@ -56,9 +56,9 @@ Vue.component('anchored-heading', {
   props: {
     level: {
       type: Number,
-      required: true,
-    },
-  },
+      required: true
+    }
+  }
 });
 ```
 
@@ -147,7 +147,7 @@ const ChildComponent = {
   functional: true,
   props: {
     name: String,
-    age: Number,
+    age: Number
   },
   render(createElement, { props }) {
     return (
@@ -155,7 +155,7 @@ const ChildComponent = {
         Name：{props.name}，Age：{props.age}
       </li>
     );
-  },
+  }
 };
 ```
 
@@ -175,10 +175,79 @@ export default {
         </ul>
       </section>
     );
-  },
+  }
 };
 ```
 
 <TryBox>
   <component-jsx-JsxMap />
+</TryBox>
+
+## 功能性組件
+
+沒有管理任何狀態，也沒有監聽任何傳給他的狀態，也沒有生命週期方法。實際上，它只是一個接收一些 `props` 的參數。我們可以將組件增加 `functional` 屬性，代表這個組件是 **沒有響應式狀態**，**沒有 `this`** 可以使用。
+
+```js{2}
+Vue.component('my-component', {
+  functional: true,
+  // 可以選擇是否寫
+  // 因為在 2.3.0 以上的版本，會自動將組件上的 attribute 隱含轉為 props
+  props: {
+    // ...
+  },
+  // 為了彌補缺少的組件實體
+  // 提供第二個參數作為組件內的溝通
+  render: function(createElement, context) {
+    // ...
+  }
+});
+```
+
+:::tip 提醒
+當使用功能性組件時，引用的將會是 HTMLElement，因為它們無狀態和無實體的。
+:::
+
+### context
+
+組件需要的一切都是透過 `context` 參數傳遞。
+
+```html
+<child-component
+  name="parentName"
+  id="parentId"
+  @parent-event="parentEventHandler"
+>
+  <template #header>This's from parent header</template>
+  <template>This's from parent default</template>
+  <template #footer>This's from parent footer</template>
+</child-component>
+```
+
+```js
+const childComponent = {
+  functional: true,
+  data() {
+    return {
+      name: 'childName',
+      id: 'childId'
+    };
+  },
+  render(h, { props, data, children, slots, listeners }) {
+    return (
+      ...
+    );
+  }
+};
+```
+
+常用的屬性有：
+
+- `props`：提供所有 props 的狀態
+- `children`：VNode 子節點的內容，即 default slot 的內容
+- `slots`：一個函式，返回了包含所有的插槽
+- `data`：傳遞給組件的整個狀態
+- `listeners`：包含所有父組件為當前組件註冊的事件監聽
+
+<TryBox>
+  <component-jsx-JsxFunctionalBasic />
 </TryBox>

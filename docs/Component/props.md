@@ -6,6 +6,69 @@
 
 :::
 
+## props
+
+主要的核心概念：
+
+- 多數用於 **一次性** 的設定值，沒有一定要雙向綁定的需求
+- 這些組件都已經是末端組件，換句話說，子組件下不太會有其他子組件存在
+- 會搭配 Slot 來做到組件變化，而不是再寫一個子組件
+- 當你必須要使用其他子組件時，請改用事件傳遞所需要的資料
+- `props` 所承接的資料，絕大多數不會過於複雜
+
+  以分頁為範例，應該將各分頁的資料分開來寫，不要全部傳入子組件。
+
+  子組件
+
+  ```js
+  // bad - 傳入整個物件
+  export default {
+    name: 'Pagination',
+    props: {
+      pager: {
+        type: Object,
+        required: true
+      }
+    }
+  };
+  // good - 屬性分開傳入
+  export default {
+    name: 'Pagination',
+    props: {
+      totlaItems: {
+        type: Number,
+        required: true
+      },
+      limit: {
+        type: Number,
+        required: true
+      },
+      first: {
+        type: Number,
+        required: true
+      },
+      current: {
+        type: Number,
+        required: true
+      }
+    }
+  };
+  ```
+
+  父組件
+
+  ```html
+  <!-- bad -->
+  <pagination :pager="pager"></pagination>
+
+  <!-- good -->
+  <ul>
+    <li v-for="page in pager">
+      <pagination v-bind="page"></pagination>
+    </li>
+  </ul>
+  ```
+
 ## 傳入 props 時沒有加上 v-bind
 
 一律以「純文字」的形式在子組件被接收，而不是外層組件的狀態。
@@ -160,10 +223,10 @@ Vue.component('base-checkbox', {
   inheritAttrs: false,
   model: {
     prop: 'checked',
-    event: 'change',
+    event: 'change'
   },
   props: {
-    checked: Boolean,
+    checked: Boolean
   },
   template: `
           <div>
@@ -174,7 +237,7 @@ Vue.component('base-checkbox', {
               v-on:change="$emit('change', $event.target.checked)"
             >
           </div>
-        `,
+        `
 });
 ```
 
@@ -211,7 +274,7 @@ Vue.component('base-checkbox', {
     // 預設為 value
     prop: 'checked',
     // 預設為 input
-    event: 'change',
+    event: 'change'
   },
   // 跟 value 一樣， v-model 的 prop : checked 要設定在 props 中
   props: ['checked', 'label'],
@@ -224,7 +287,7 @@ Vue.component('base-checkbox', {
       >
       {{label}}
     </label>
-  `,
+  `
 });
 ```
 
@@ -295,7 +358,7 @@ Vue.component('base-input-with-label', {
           input(event) {
             // 這時候的 this 為原生 window 原生事件
             vm.$emit('input', event.target.value);
-          },
+          }
         }
       );
     },
@@ -305,9 +368,9 @@ Vue.component('base-input-with-label', {
         // 覆蓋 $listeners 中的 focus 事件
         focus(event) {
           console.log('this is from child focus event');
-        },
+        }
       });
-    },
+    }
   },
   template: `
           <label>
@@ -315,7 +378,7 @@ Vue.component('base-input-with-label', {
             <!--只會觸發 focus 事件-->
             <input v-on="focusListeners">
           </label>
-        `,
+        `
 });
 ```
 
