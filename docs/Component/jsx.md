@@ -135,6 +135,27 @@ render(createElement) {
 
 安裝方式請看 [官方說明](https://github.com/vuejs/jsx)。
 
+:::tip 提醒
+
+如果在父組件中引用子組件，並將 `style` 或 `class` 傳入時，這兩個屬性可以在 `context.data` 查找，但它們不會被歸類至 `context.data.attrs` 屬性中。
+
+```html
+<div class="parent">
+  <ChildComponent name="parentName" class="pb-0 border-bottom-0" />
+</div>
+```
+
+子組件的 `data` 屬性：
+
+```js{3}
+{
+  attrs: {name: "parentName"},
+  class: 'pb-0 border-bottom-0'
+}
+```
+
+:::
+
 ### 多元素渲染
 
 使用 Javascript 的 `Array.map` 來達成。
@@ -179,9 +200,103 @@ export default {
 };
 ```
 
+### functional event
+
+透過 `context.listeners` 屬性，將 custom event 傳入子組件的事件中。
+
+```js{3}
+const ChildComponent = ({ data, props, listeners }) => (
+  <div class="childComponent">
+    <p class={data.class} onClick={listeners.pipi}>
+      Hi, {props.name}
+    </p>
+  </div>
+);
+```
+
+```js{8}
+export default {
+  render() {
+    return (
+      <div>
+        <ChildComponent
+          class="text-success"
+          name="John Doe"
+          onPipi={this.clickHandler}
+        />
+      </div>
+    );
+  }
+};
+```
+
 <TryBox>
-  <component-jsx-JsxMap />
+  <component-jsx-JsxFunctionalEvent />
 </TryBox>
+
+### v-model
+
+直接於渲染的組件中使用 `v-model` 的屬性綁定。
+
+```js{10}
+render() {
+  return (
+    <div>
+      {this.checkboxs.map((checkbox) => {
+        return (
+          <input
+            type="checkbox"
+            id={checkbox.name}
+            value={checkbox.name}
+            v-model={this.checkedList}
+          />
+          <label for={checkbox.name}>
+            {checkbox.name}
+          </label>
+        );
+      })}
+    </div>
+  );
+}
+```
+
+<TryBox>
+  <component-jsx-JsxVModel />
+</TryBox>
+
+### conditional render
+
+依照 `props` 接收的狀態，來決定渲染的內容。
+
+```js{5,6}
+const PermissionComponent = {
+  functional: true,
+  render(h, { props, slots }) {
+    const { permissionCode } = props;
+    if (permissionCode === 0) return null;
+    return slots().default;
+  }
+};
+```
+
+```js
+export default {
+  data() {
+    return {
+      permissionCode: 1
+    };
+  },
+  render() {
+    return (
+      <section>
+        <PermissionComponent permissionCode={this.permissionCode}>
+          <h2>{`PermissionCode${this.permissionCode}`}</h2>
+        </PermissionComponent>
+      </section>
+    );
+  }
+};
+```
 
 ## 功能性組件
 
@@ -243,7 +358,7 @@ const childComponent = {
 常用的屬性有：
 
 - `props`：提供所有 props 的狀態
-- `children`：VNode 子節點的內容，即 default slot 的內容
+- `children`：slots().default 的 VNode 節點內容
 - `slots`：一個函式，返回了包含所有的插槽
 - `data`：傳遞給組件的整個狀態
 - `listeners`：包含所有父組件為當前組件註冊的事件監聽

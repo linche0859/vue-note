@@ -5,7 +5,7 @@
       <code>context</code>
     </h2>
     <child-component name="parentName" id="parentId" @parent-event="parentEventHandler">
-      <template #header>This's from parent header</template>
+      <template v-slot:header>This's from parent header</template>
       <template>This's from parent default</template>
       <template #footer>This's from parent footer</template>
     </child-component>
@@ -41,7 +41,7 @@ const childComponent = {
           <code>slots().header</code>：{slots().header}
         </p>
         <p>
-          <code>slots().default</code>：{slots().default}
+          <code>slots().default</code>：{children}
         </p>
         <p>
           <code>slots().footer</code>：{slots().footer}
