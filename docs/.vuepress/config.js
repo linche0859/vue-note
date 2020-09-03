@@ -128,7 +128,7 @@ module.exports = {
       },
       {
         title: 'Plugin',
-        children: ['/Plugin/eslint']
+        children: ['/Plugin/lint']
       },
       {
         title: '進階',
