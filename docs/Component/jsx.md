@@ -35,9 +35,9 @@ Vue.component('anchored-heading', {
   props: {
     level: {
       type: Number,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 });
 ```
 
@@ -56,9 +56,9 @@ Vue.component('anchored-heading', {
   props: {
     level: {
       type: Number,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 });
 ```
 
@@ -168,7 +168,7 @@ const ChildComponent = {
   functional: true,
   props: {
     name: String,
-    age: Number
+    age: Number,
   },
   render(createElement, { props }) {
     return (
@@ -176,7 +176,7 @@ const ChildComponent = {
         Name：{props.name}，Age：{props.age}
       </li>
     );
-  }
+  },
 };
 ```
 
@@ -196,7 +196,7 @@ export default {
         </ul>
       </section>
     );
-  }
+  },
 };
 ```
 
@@ -226,7 +226,7 @@ export default {
         />
       </div>
     );
-  }
+  },
 };
 ```
 
@@ -275,7 +275,7 @@ const PermissionComponent = {
     const { permissionCode } = props;
     if (permissionCode === 0) return null;
     return slots().default;
-  }
+  },
 };
 ```
 
@@ -283,7 +283,7 @@ const PermissionComponent = {
 export default {
   data() {
     return {
-      permissionCode: 1
+      permissionCode: 1,
     };
   },
   render() {
@@ -294,7 +294,7 @@ export default {
         </PermissionComponent>
       </section>
     );
-  }
+  },
 };
 ```
 
@@ -314,7 +314,7 @@ Vue.component('my-component', {
   // 提供第二個參數作為組件內的溝通
   render: function(createElement, context) {
     // ...
-  }
+  },
 });
 ```
 

@@ -14,6 +14,8 @@
     "sass-loader": "^9.0.0"
   },
   "devDependencies": {
+    "eslint": "^7.9.0",
+    "eslint-plugin-vue": "^7.0.0-beta.3",
     "vuepress": "^1.5.4"
   }
 }
