@@ -5,7 +5,7 @@ module.exports = {
   markdown: {
     config: (md) => {
       md.use(require('markdown-it-tetris'));
-    }
+    },
   },
   base: '/vue-note/',
   // Extra tags to inject into the page HTML <head>
@@ -20,33 +20,33 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              sourceMap: true
-            }
+              sourceMap: true,
+            },
           },
           'postcss-loader',
           {
             loader: 'sass-loader',
             options: {
-              sourceMap: true
-            }
-          }
-        ]
-      }
-    ]
+              sourceMap: true,
+            },
+          },
+        ],
+      },
+    ],
   },
   configureWebpack: {
     resolve: {
       alias: {
         '@image': '/images',
-        '@styles': path.resolve(__dirname, './styles')
-      }
-    }
+        '@styles': path.resolve(__dirname, './styles'),
+      },
+    },
   },
   chainWebpack(config) {
     config.resolve.alias.set('vue', 'vue/dist/vue.common.js');
   },
   markdown: {
-    lineNumbers: true // 代碼塊顯示行號
+    lineNumbers: true, // 代碼塊顯示行號
   },
   themeConfig: {
     // sidebarDepth: 1, // 將同時提取markdown中 h2 和 h3 標題，顯示在側邊欄上
@@ -56,7 +56,7 @@ module.exports = {
     // 導航欄配置
     nav: [
       // { text: '內部連結', link: '/algorithm/' }, // 內部鏈接 以docs為根目錄
-      { text: 'GitHub', link: 'https://github.com/linche0859/vue-note' } // 外部鏈接
+      { text: 'GitHub', link: 'https://github.com/linche0859/vue-note' }, // 外部鏈接
     ],
     // 側邊欄配置
     sidebar: [
@@ -68,16 +68,16 @@ module.exports = {
           '/basic/event',
           '/basic/condition',
           '/basic/dynamic-command',
-          '/basic/life-cycle'
-        ]
+          '/basic/life-cycle',
+        ],
       },
       {
         title: '全局 API',
-        children: ['/api/filter', '/api/observable']
+        children: ['/api/filter', '/api/observable'],
       },
       {
         title: '實例方法',
-        children: ['/Methods/watch', '/Methods/option']
+        children: ['/Methods/watch', '/Methods/option'],
       },
       {
         title: '組件系統',
@@ -92,8 +92,9 @@ module.exports = {
           '/Component/import-require',
           '/Component/loader',
           '/Component/jsx',
-          '/Component/inject'
-        ]
+          '/Component/inject',
+          '/Component/hoc',
+        ],
       },
       {
         title: 'Vue Router',
@@ -101,8 +102,8 @@ module.exports = {
           '/Router/basic',
           '/Router/guide',
           '/Router/lifecycle',
-          '/Router/encapsulation'
-        ]
+          '/Router/encapsulation',
+        ],
       },
       {
         title: 'Vuex',
@@ -111,29 +112,29 @@ module.exports = {
           '/Vuex/module',
           '/Vuex/design',
           '/Vuex/encapsulation',
-          '/Vuex/plugin'
-        ]
+          '/Vuex/plugin',
+        ],
       },
       {
         title: 'Axios',
-        children: ['/Axios/basic', '/Axios/encapsulation']
+        children: ['/Axios/basic', '/Axios/encapsulation'],
       },
       {
         title: '範例應用',
         children: [
           '/Example/restful',
           '/Example/temperature',
-          '/Example/todoList'
-        ]
+          '/Example/todoList',
+        ],
       },
       {
         title: 'Plugin',
-        children: ['/Plugin/lint']
+        children: ['/Plugin/lint'],
       },
       {
         title: '進階',
-        children: ['/Advanced/response']
-      }
-    ]
-  }
+        children: ['/Advanced/response'],
+      },
+    ],
+  },
 };

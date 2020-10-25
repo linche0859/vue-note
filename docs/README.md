@@ -31,6 +31,7 @@
 - [沒有 webpack 打造 vue loader 環境](/Component/loader.md)
 - [渲染函式和 JSX](/Component/jsx.md)
 - [依賴注入](/Component/inject.md)
+- [High Order Component](/Component/hoc.md)
 
 ## Vue Router
 
