@@ -1,4 +1,4 @@
-# 基礎使用和 Config
+# Axios 基礎使用和 Config
 
 :::tip 提醒
 

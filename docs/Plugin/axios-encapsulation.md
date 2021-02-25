@@ -1,4 +1,4 @@
-# 請求和響應封裝
+# Axios 請求和響應封裝
 
 ## 安裝和準備
 
@@ -284,7 +284,7 @@ instance.interceptors.response.use(
 **index.js**
 
 ```js
-export default function (method, url, data = null, config) {
+export default function(method, url, data = null, config) {
   method = method.toLowerCase();
   switch (method) {
     case 'post':
