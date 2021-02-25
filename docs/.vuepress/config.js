@@ -135,6 +135,10 @@ module.exports = {
           '/example/todoList',
         ],
       },
+      {
+        title: 'NUXT',
+        children: ['/nuxt/pm2'],
+      },
     ],
   },
 };

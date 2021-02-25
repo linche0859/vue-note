@@ -63,3 +63,7 @@
 - [RESTful](/example/restful.md)
 - [溫度轉換](/example/temperature.md)
 - [代辦事項清單](/example/todoList.md)
+
+## NUXT
+
+- [使用 PM2 架設 nuxt 站台](/nuxt/pm2.md)
