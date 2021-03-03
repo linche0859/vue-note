@@ -137,7 +137,7 @@ module.exports = {
       },
       {
         title: 'NUXT',
-        children: ['/nuxt/pm2'],
+        children: ['/nuxt/pm2', '/nuxt/serverMiddleware'],
       },
     ],
   },
