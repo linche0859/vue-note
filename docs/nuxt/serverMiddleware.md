@@ -10,7 +10,7 @@ export default {
 };
 ```
 
-![server middleware](./images/server-middleware.PNG)
+![server middleware](./images/server-middleware.png)
 
 ## 實做 Google 登入機制
 
@@ -18,7 +18,7 @@ export default {
 
 1. 參考下方關係圖，實作 [程式區塊](https://gitlab.com/linche0859/nuxt-course/-/blob/master/server/auth.js)
 
-   ![google login](./images/google-login.PNG)
+   ![google login](./images/google-login.png)
 
 1. 接收回來的 `id_token` 可以透過 `jwt-decode` 進行解碼分析，最後導回指定的路由
 
@@ -44,6 +44,6 @@ export default {
 
 ## 前後端分離的 OAuth 開發流程
 
-![oauth](./images/oauth.PNG)
+![oauth](./images/oauth.png)
 
 可以參考這篇 [文章](https://zhuanlan.zhihu.com/p/122482859)。
