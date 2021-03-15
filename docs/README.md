@@ -68,3 +68,4 @@
 
 - [使用 PM2 架設 nuxt 站台](/nuxt/pm2.md)
 - [Server Middleware](/nuxt/serverMiddleware.md)
+- [生命週期](/nuxt/lifecycle.md)
